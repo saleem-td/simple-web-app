@@ -35,9 +35,10 @@ jobs:
         
       - name: Create deployment package
         run: |
+          rm -rf .deployment
           mkdir -p .deployment
           echo "python -m streamlit run app.py --server.port 8000 --server.address 0.0.0.0" > .deployment/startup.txt
-          zip -r release.zip ./* 
+          zip -r release.zip ./*
 
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
