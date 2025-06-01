@@ -282,12 +282,30 @@ def main():
     
     with col1:
         st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        latest_temp = temp_data_filtered[temp_data_filtered['Region'] == 'Global']['Temperature Anomaly (°C)'].iloc[-1]
-        st.metric(
-            "Current Temperature Anomaly", 
-            f"{latest_temp} °C",
-            f"{round(latest_temp - temp_data_filtered[temp_data_filtered['Region'] == 'Global']['Temperature Anomaly (°C)'].iloc[0], 2)} °C"
-        )
+        # Check if 'Global' region exists in the filtered data
+        global_temp_data = temp_data_filtered[temp_data_filtered['Region'] == 'Global']
+        if len(global_temp_data) > 0:
+            latest_temp = global_temp_data['Temperature Anomaly (°C)'].iloc[-1]
+            first_temp = global_temp_data['Temperature Anomaly (°C)'].iloc[0]
+            st.metric(
+                "Current Temperature Anomaly", 
+                f"{latest_temp} °C",
+                f"{round(latest_temp - first_temp, 2)} °C"
+            )
+        else:
+            # If 'Global' is not in the selected regions, use the first selected region
+            first_region = selected_regions[0]
+            region_data = temp_data_filtered[temp_data_filtered['Region'] == first_region]
+            if len(region_data) > 0:
+                latest_temp = region_data['Temperature Anomaly (°C)'].iloc[-1]
+                first_temp = region_data['Temperature Anomaly (°C)'].iloc[0]
+                st.metric(
+                    f"{first_region} Temperature Anomaly", 
+                    f"{latest_temp} °C",
+                    f"{round(latest_temp - first_temp, 2)} °C"
+                )
+            else:
+                st.metric("Temperature Anomaly", "No data available", "0.0 °C")
         st.markdown('</div>', unsafe_allow_html=True)
     
     with col2:
