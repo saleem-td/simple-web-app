@@ -1,763 +1,485 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
-from datetime import datetime
-import base64
-from io import BytesIO
+import networkx as nx
+from pyvis.network import Network
+import streamlit.components.v1 as components
+import os
 
-# Set page configuration
+# Page configuration
 st.set_page_config(
-    page_title="Climate Insights Dashboard",
-    page_icon="🌍",
+    page_title="Family Tree ✨",
+    page_icon="👨‍👩‍👧‍👦",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for styling
-def load_css():
+# Custom CSS directly in the app.py file
+css = """
+/* Main styling */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background-color: #fcfcfc;
+}
+
+/* Header styling */
+h1, h2, h3 {
+    font-family: 'Georgia', serif;
+    color: #2c3e50;
+}
+
+.stTabs [data-baseweb="tab-list"] {
+    gap: 24px;
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 50px;
+    white-space: pre-wrap;
+    background-color: #f8f9fa;
+    border-radius: 4px 4px 0 0;
+    gap: 1px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: #e3f2fd;
+    border-bottom: 2px solid #1976d2;
+}
+
+/* Introduction text */
+.intro-text {
+    font-size: 18px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+    padding: 20px;
+    background-color: #fff8e1;
+    border-left: 4px solid #ffb74d;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Member cards */
+.member-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.member-card {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-top: 4px solid #4caf50;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.member-card h3 {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* About section */
+.about-section {
+    background-color: #e8f5e9;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.about-section h3 {
+    color: #2e7d32;
+    margin-top: 20px;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-top: 1px solid #eee;
+    color: #7f8c8d;
+    font-size: 14px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+}
+
+/* Metrics styling */
+div[data-testid="stMetricValue"] {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff7043;
+}
+
+div[data-testid="stMetricLabel"] {
+    font-weight: 500;
+    color: #455a64;
+}
+
+/* Network graph container */
+.network-container {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* Generation colors */
+.generation-0 { background-color: #e3f2fd; }
+.generation-1 { background-color: #e8f5e9; }
+.generation-2 { background-color: #fff3e0; }
+.generation-3 { background-color: #f3e5f5; }
+
+/* Emoji styling */
+.emoji {
+    font-size: 24px;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.title-emoji {
+    font-size: 32px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+.card-emoji {
+    font-size: 20px;
+    float: right;
+    margin-top: -30px;
+}
+"""
+
+# Apply CSS
+st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
+
+# Title and introduction with emojis
+st.markdown("<span class='title-emoji'>👨‍👩‍👧‍👦</span> <span class='title-emoji'>✨</span>", unsafe_allow_html=True)
+st.title("Our Wonderful Family Tree")
+st.markdown("""
+<div class="intro-text">
+    <span class='emoji'>🌳</span> Welcome to our interactive family tree! Explore the connections and learn more about each family member. 
+    <span class='emoji'>💖</span> Discover the beautiful bonds that tie our family together across generations!
+</div>
+""", unsafe_allow_html=True)
+
+# Create tabs with emojis
+tab1, tab2, tab3 = st.tabs(["🌳 Family Tree", "👪 Family Members", "📜 About Us"])
+
+# Define family data with emojis for professions
+profession_emojis = {
+    "Grandfather": "👴",
+    "Grandmother": "👵",
+    "Father": "👨",
+    "Mother": "👩",
+    "Obstetrics & Gynecology Consultant": "👩‍⚕️",
+    "Human Resources Management": "👩‍💼",
+    "Orthodontics Consultant": "🦷",
+    "Finance": "💰",
+    "Network Systems Engineering": "💻",
+    "Management Information Systems": "📊",
+    "Mechanical Engineering - Student": "🔧",
+    "Middle School Student": "🎒",
+    "Biochemistry & Nutrition": "🧪",
+    "Chemical Engineering": "⚗️",
+    "Accounting": "📝",
+    "Mechanical Engineering": "⚙️",
+    "Biochemistry": "🔬",
+    "Economics": "📈",
+    "Network Security": "🔒",
+    "Science": "🔭",
+    "Marine Biology": "🐠",
+    "Network Technology": "🌐",
+    "Child": "👶"
+}
+
+family_data = {
+    "name": ["Saleem", "Samia", 
+             "Talal", "Laila", "Maha", "Mona",
+             "Ghada", "Dalia", "Dima", "Aya", "Saleem Jr", "Mohammed", "Faisal", "Omar",
+             "Khloud", "Khaled",
+             "Soha", "Lamia", "Basma", "Ruba", "Fawaz",
+             "Mirna", "Mayar", "Miran", "Myrai", "Abdulaziz", "Abdulrahman", "Abdulwahab",
+             "Layan", 
+             "Rima", "Talia", 
+             "Yazan", "Zeina", 
+             "Yousef",
+             "Abdulmalik", "Abdulilah", "Noah",
+             "Salma",
+             "Mohammed Jr", "Yara",
+             "Malek"],
+    "generation": [0, 0, 
+                  1, 1, 1, 1,
+                  2, 2, 2, 2, 2, 2, 2, 2,
+                  2, 2,
+                  2, 2, 2, 2, 2,
+                  2, 2, 2, 2, 2, 2, 2,
+                  3, 
+                  3, 3, 
+                  3, 3, 
+                  3,
+                  3, 3, 3,
+                  3,
+                  3, 3,
+                  3],
+    "parent": [None, None, 
+              "Saleem", "Saleem", "Saleem", "Saleem",
+              "Talal", "Talal", "Talal", "Talal", "Talal", "Talal", "Talal", "Talal",
+              "Laila", "Laila",
+              "Maha", "Maha", "Maha", "Maha", "Maha",
+              "Mona", "Mona", "Mona", "Mona", "Mona", "Mona", "Mona",
+              "Ghada", 
+              "Dalia", "Dalia", 
+              "Dima", "Dima", 
+              "Aya",
+              "Soha", "Soha", "Soha",
+              "Lamia",
+              "Ruba", "Ruba",
+              "Fawaz"],
+    "profession": ["Grandfather", "Grandmother", 
+                  "Father", "Mother", "Mother", "Mother",
+                  "Obstetrics & Gynecology Consultant", "Human Resources Management", "Orthodontics Consultant", 
+                  "Finance", "Network Systems Engineering", "Management Information Systems", 
+                  "Mechanical Engineering - Student", "Middle School Student",
+                  "Biochemistry & Nutrition", "Management Information Systems",
+                  "Human Resources Management", "Chemical Engineering", "Finance", "Accounting", "Mechanical Engineering",
+                  "Biochemistry", "Economics", "Network Security", "Science", 
+                  "Marine Biology", "Network Technology", "Accounting",
+                  "Child", 
+                  "Child", "Child", 
+                  "Child", "Child", 
+                  "Child",
+                  "Child", "Child", "Child",
+                  "Child",
+                  "Child", "Child",
+                  "Child"]
+}
+
+# Create a DataFrame
+family_df = pd.DataFrame(family_data)
+
+with tab1:
+    st.markdown("<h2>🌳 Interactive Family Tree</h2>", unsafe_allow_html=True)
+    
+    # Create a network graph
+    G = nx.DiGraph()
+    
+    # Add nodes with attributes
+    for i, row in family_df.iterrows():
+        emoji = profession_emojis.get(row['profession'], "👤")
+        G.add_node(row['name'], 
+                  title=f"{row['name']} {emoji}<br>Profession: {row['profession']}", 
+                  group=row['generation'])
+    
+    # Add edges (connections)
+    for i, row in family_df.iterrows():
+        if row['parent'] is not None:
+            G.add_edge(row['parent'], row['name'])
+    
+    # Create a pyvis network
+    net = Network(height="600px", width="100%", directed=True, bgcolor="#ffffff", font_color="black")
+    
+    # Set options
+    net.set_options('''
+    {
+      "nodes": {
+        "shape": "circle",
+        "size": 30,
+        "font": {
+          "size": 16,
+          "face": "Tahoma"
+        },
+        "borderWidth": 3,
+        "shadow": true,
+        "color": {
+          "border": "#2c3e50",
+          "background": "#ecf0f1"
+        }
+      },
+      "edges": {
+        "color": {
+          "color": "#3498db",
+          "highlight": "#e74c3c"
+        },
+        "width": 3,
+        "smooth": {
+          "type": "continuous",
+          "roundness": 0.5
+        }
+      },
+      "physics": {
+        "hierarchicalRepulsion": {
+          "centralGravity": 0.5,
+          "springLength": 150,
+          "springConstant": 0.01,
+          "nodeDistance": 120,
+          "damping": 0.09
+        },
+        "solver": "hierarchicalRepulsion"
+      },
+      "layout": {
+        "hierarchical": {
+          "enabled": true,
+          "levelSeparation": 150,
+          "nodeSpacing": 120,
+          "treeSpacing": 200,
+          "direction": "UD"
+        }
+      }
+    }
+    ''')
+    
+    # Add nodes and edges from networkx graph
+    net.from_nx(G)
+    
+    # Generate the HTML file
+    net.save_graph("family_tree.html")
+    
+    # Display the HTML file
+    with open("family_tree.html", "r", encoding="utf-8") as f:
+        html = f.read()
+    
+    components.html(html, height=600)
+    
+    st.info("👆 You can interact with the family tree above. Drag nodes to rearrange, zoom in/out with the mouse wheel, and click on members to see details! ✨")
+
+with tab2:
+    st.markdown("<h2>👪 Our Amazing Family Members</h2>", unsafe_allow_html=True)
+    
+    # Create generation filter with emojis
+    generations = {
+        0: "👵👴 Grandparents",
+        1: "👩👨 Children",
+        2: "👱‍♀️👱‍♂️ Grandchildren",
+        3: "👶 Great-grandchildren"
+    }
+    
+    selected_gen = st.selectbox("Select Generation", list(generations.values()))
+    gen_num = list(generations.keys())[list(generations.values()).index(selected_gen)]
+    
+    # Filter dataframe by generation
+    filtered_df = family_df[family_df['generation'] == gen_num]
+    
+    # Display family members in cards
+    st.markdown("<div class='member-grid'>", unsafe_allow_html=True)
+    
+    cols = st.columns(3)
+    for i, (_, member) in enumerate(filtered_df.iterrows()):
+        emoji = profession_emojis.get(member['profession'], "👤")
+        
+        # Get children information
+        children = family_df[family_df['parent'] == member['name']]['name'].tolist()
+        children_str = ', '.join(children) if children else ""
+        children_emojis = '👶' * len(children) if children else ""
+        
+        with cols[i % 3]:
+            card_html = f"""
+            <div class="member-card">
+                <h3>{member['name']} <span class="card-emoji">{emoji}</span></h3>
+                <p><strong>Profession:</strong> {member['profession']}</p>
+            """
+            
+            # Add parent info if exists
+            if member['parent']:
+                card_html += f"<p><strong>Parent:</strong> {member['parent']} 👪</p>"
+            
+            # Add children info if exists
+            if children:
+                card_html += f"<p><strong>Children:</strong> {children_str} {children_emojis}</p>"
+                
+            card_html += "</div>"
+            
+            st.markdown(card_html, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
+
+with tab3:
+    st.markdown("<h2>📜 About Our Wonderful Family</h2>", unsafe_allow_html=True)
+    
     st.markdown("""
-    <style>
-        .main {
-            background-color: #f5f7f9;
-        }
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 8px;
-        }
-        .stTabs [data-baseweb="tab"] {
-            background-color: #ffffff;
-            border-radius: 4px 4px 0px 0px;
-            padding: 10px 20px;
-            border: none;
-        }
-        .stTabs [aria-selected="true"] {
-            background-color: #4e8cff;
-            color: white;
-        }
-        .stButton>button {
-            background-color: #4e8cff;
-            color: white;
-            border-radius: 4px;
-            padding: 10px 20px;
-            font-weight: bold;
-            border: none;
-        }
-        .stButton>button:hover {
-            background-color: #3a7ad9;
-        }
-        .metric-card {
-            background-color: white;
-            border-radius: 5px;
-            padding: 15px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1, h2, h3 {
-            color: #1e3a8a;
-        }
-    </style>
+    <div class="about-section">
+        <h3>✨ Our Family History ✨</h3>
+        <p>This interactive family tree showcases our family's generations, from grandparents to great-grandchildren. Each member brings their unique talents and personality to our amazing family!</p>
+    </div>
     """, unsafe_allow_html=True)
-
-# Data helper functions
-def generate_temperature_data(start_year=1950, end_year=2023):
-    """Generate simulated global temperature anomaly data."""
-    years = list(range(start_year, end_year + 1))
-    # Simulate increasing temperature anomaly with some random variation
-    base_anomaly = np.linspace(-0.1, 1.2, len(years))
-    noise = np.random.normal(0, 0.15, len(years))
-    anomalies = base_anomaly + noise
     
-    # Create regional variations
-    regions = ['Global', 'Northern Hemisphere', 'Southern Hemisphere', 
-               'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
+    # Create separate sections with explicit HTML rendering
+    st.markdown('<div class="about-section">', unsafe_allow_html=True)
     
-    data = []
-    for region in regions:
-        # Add regional variation
-        region_factor = np.random.uniform(0.8, 1.2)
-        region_offset = np.random.uniform(-0.2, 0.2)
-        region_anomalies = anomalies * region_factor + region_offset
-        
-        for i, year in enumerate(years):
-            data.append({
-                'Year': year,
-                'Region': region,
-                'Temperature Anomaly (°C)': round(region_anomalies[i], 2)
-            })
+    # Family Structure section
+    st.write("### 👨‍👩‍👧‍👦 Family Structure")
+    st.write("Our family begins with Saleem and his wife Samia. They had four wonderful children: Talal, Laila, Maha, and Mona, who have gone on to have their own children and grandchildren, creating a beautiful extended family filled with love and support.")
     
-    return pd.DataFrame(data)
-
-def generate_co2_data(start_year=1950, end_year=2023):
-    """Generate simulated CO2 concentration data."""
-    years = list(range(start_year, end_year + 1))
-    # Simulate exponential increase in CO2 levels
-    base_level = 310 + np.exp(np.linspace(0, 1.2, len(years))) * 60
-    noise = np.random.normal(0, 3, len(years))
-    co2_levels = base_level + noise
+    # Professional Achievements section
+    st.write("### 🏆 Professional Achievements")
+    st.write("Our family members have diverse professional backgrounds, including medical professionals, engineers, finance experts, and students pursuing their education. We're proud of everyone's accomplishments and the passion they bring to their fields!")
     
-    data = []
-    for i, year in enumerate(years):
-        data.append({
-            'Year': year,
-            'CO2 Concentration (ppm)': round(co2_levels[i], 1)
-        })
+    # Family Traditions section
+    st.write("### 💖 Family Traditions")
+    st.write("Our family loves to gather for special occasions, sharing stories, delicious food, and creating memories that will last a lifetime. From holiday celebrations to summer vacations, we cherish the time we spend together!")
     
-    return pd.DataFrame(data)
-
-def generate_sea_level_data(start_year=1950, end_year=2023):
-    """Generate simulated sea level rise data."""
-    years = list(range(start_year, end_year + 1))
-    # Simulate accelerating sea level rise
-    base_rise = np.power(np.linspace(0, 1, len(years)), 1.5) * 250
-    noise = np.random.normal(0, 5, len(years))
-    sea_level = base_rise + noise
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    data = []
-    for i, year in enumerate(years):
-        data.append({
-            'Year': year,
-            'Sea Level Rise (mm)': round(sea_level[i], 1)
-        })
-    
-    return pd.DataFrame(data)
-
-def generate_arctic_ice_data(start_year=1950, end_year=2023):
-    """Generate simulated Arctic sea ice extent data."""
-    years = list(range(start_year, end_year + 1))
-    # Simulate decreasing ice extent
-    base_extent = 8 - np.power(np.linspace(0, 1, len(years)), 1.2) * 3
-    noise = np.random.normal(0, 0.3, len(years))
-    ice_extent = base_extent + noise
-    
-    # Ensure values don't go below a reasonable minimum
-    ice_extent = np.maximum(ice_extent, 2)
-    
-    data = []
-    for i, year in enumerate(years):
-        data.append({
-            'Year': year,
-            'Arctic Ice Extent (million sq km)': round(ice_extent[i], 2)
-        })
-    
-    return pd.DataFrame(data)
-
-def generate_country_emissions_data():
-    """Generate simulated emissions data by country."""
-    countries = [
-        'United States', 'China', 'India', 'Russia', 'Japan', 
-        'Germany', 'Canada', 'Brazil', 'Indonesia', 'United Kingdom',
-        'Mexico', 'France', 'Italy', 'Australia', 'South Korea'
-    ]
-    
-    data = []
-    for country in countries:
-        # Simulate different emission levels for different countries
-        if country in ['United States', 'China']:
-            emissions = np.random.uniform(5000, 10000)
-        elif country in ['India', 'Russia', 'Japan', 'Germany']:
-            emissions = np.random.uniform(1500, 5000)
-        else:
-            emissions = np.random.uniform(300, 1500)
-        
-        data.append({
-            'Country': country,
-            'CO2 Emissions (Mt)': round(emissions, 1)
-        })
-    
-    return pd.DataFrame(data)
-
-def generate_scenario_data(baseline_temp, reduction_level):
-    """Generate climate scenario projection data based on emission reduction levels."""
-    years = list(range(2023, 2101))
-    
-    # Different trajectories based on reduction level
-    if reduction_level == "No Action (Business as Usual)":
-        temp_increase = np.linspace(0, 4.5, len(years))
-        uncertainty = 0.5
-    elif reduction_level == "Moderate Action":
-        temp_increase = np.linspace(0, 2.7, len(years))
-        uncertainty = 0.4
-    elif reduction_level == "Strong Action":
-        temp_increase = np.linspace(0, 1.8, len(years))
-        uncertainty = 0.3
-    else:  # Paris Agreement Target
-        temp_increase = np.linspace(0, 1.5, len(years))
-        uncertainty = 0.2
-    
-    # Add some noise and uncertainty bands
-    noise = np.random.normal(0, 0.1, len(years))
-    temp_projection = baseline_temp + temp_increase + noise
-    
-    lower_bound = temp_projection - np.random.uniform(0, uncertainty, len(years))
-    upper_bound = temp_projection + np.random.uniform(0, uncertainty, len(years))
-    
-    data = []
-    for i, year in enumerate(years):
-        data.append({
-            'Year': year,
-            'Temperature Projection (°C)': round(temp_projection[i], 2),
-            'Lower Bound': round(lower_bound[i], 2),
-            'Upper Bound': round(upper_bound[i], 2),
-            'Scenario': reduction_level
-        })
-    
-    return pd.DataFrame(data)
-
-def get_report_download_link(df, filename, text):
-    """Generate a link to download the data as a CSV file."""
-    csv = df.to_csv(index=False)
-    b64 = base64.b64encode(csv.encode()).decode()
-    href = f'<a href="data:file/csv;base64,{b64}" download="{filename}">{text}</a>'
-    return href
-
-# Main application
-def main():
-    load_css()
-    
-    # Header
-    st.title("🌍 Climate Insights Dashboard")
-    st.markdown("""
-    This interactive dashboard visualizes global climate data and trends. 
-    Use the sidebar to filter data and explore different visualizations.
-    """)
-    
-    # Sidebar filters
-    st.sidebar.header("Filters")
-    
-    # Year range slider
-    min_year = 1950
-    max_year = 2023
-    year_range = st.sidebar.slider(
-        "Select Year Range",
-        min_value=min_year,
-        max_value=max_year,
-        value=(1980, max_year)
-    )
-    
-    # Region selection
-    all_regions = ['Global', 'Northern Hemisphere', 'Southern Hemisphere', 
-                  'North America', 'Europe', 'Asia', 'Africa', 'Oceania']
-    selected_regions = st.sidebar.multiselect(
-        "Select Regions",
-        options=all_regions,
-        default=['Global']
-    )
-    
-    if not selected_regions:
-        selected_regions = ['Global']
-    
-    # Generate data based on filters
-    temp_data = generate_temperature_data(min_year, max_year)
-    co2_data = generate_co2_data(min_year, max_year)
-    sea_level_data = generate_sea_level_data(min_year, max_year)
-    ice_data = generate_arctic_ice_data(min_year, max_year)
-    emissions_data = generate_country_emissions_data()
-    
-    # Filter data based on year range
-    temp_data_filtered = temp_data[
-        (temp_data['Year'] >= year_range[0]) & 
-        (temp_data['Year'] <= year_range[1]) &
-        (temp_data['Region'].isin(selected_regions))
-    ]
-    
-    co2_data_filtered = co2_data[
-        (co2_data['Year'] >= year_range[0]) & 
-        (co2_data['Year'] <= year_range[1])
-    ]
-    
-    sea_level_data_filtered = sea_level_data[
-        (sea_level_data['Year'] >= year_range[0]) & 
-        (sea_level_data['Year'] <= year_range[1])
-    ]
-    
-    ice_data_filtered = ice_data[
-        (ice_data['Year'] >= year_range[0]) & 
-        (ice_data['Year'] <= year_range[1])
-    ]
-    
-    # Key metrics
-    st.header("Key Climate Indicators")
+    # Family statistics with emojis
+    st.subheader("✨ Family Statistics ✨")
     
     col1, col2, col3, col4 = st.columns(4)
-    
     with col1:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        # Check if 'Global' region exists in the filtered data
-        global_temp_data = temp_data_filtered[temp_data_filtered['Region'] == 'Global']
-        if len(global_temp_data) > 0:
-            latest_temp = global_temp_data['Temperature Anomaly (°C)'].iloc[-1]
-            first_temp = global_temp_data['Temperature Anomaly (°C)'].iloc[0]
-            st.metric(
-                "Current Temperature Anomaly", 
-                f"{latest_temp} °C",
-                f"{round(latest_temp - first_temp, 2)} °C"
-            )
-        else:
-            # If 'Global' is not in the selected regions, use the first selected region
-            first_region = selected_regions[0]
-            region_data = temp_data_filtered[temp_data_filtered['Region'] == first_region]
-            if len(region_data) > 0:
-                latest_temp = region_data['Temperature Anomaly (°C)'].iloc[-1]
-                first_temp = region_data['Temperature Anomaly (°C)'].iloc[0]
-                st.metric(
-                    f"{first_region} Temperature Anomaly", 
-                    f"{latest_temp} °C",
-                    f"{round(latest_temp - first_temp, 2)} °C"
-                )
-            else:
-                st.metric("Temperature Anomaly", "No data available", "0.0 °C")
-        st.markdown('</div>', unsafe_allow_html=True)
-    
+        st.metric("👨‍👩‍👧‍👦 Total Family Members", len(family_df))
     with col2:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        latest_co2 = co2_data_filtered['CO2 Concentration (ppm)'].iloc[-1]
-        st.metric(
-            "Current CO₂ Concentration", 
-            f"{latest_co2} ppm",
-            f"{round(latest_co2 - co2_data_filtered['CO2 Concentration (ppm)'].iloc[0], 1)} ppm"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
-    
+        st.metric("🔄 Generations", len(family_df['generation'].unique()))
     with col3:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        latest_sea = sea_level_data_filtered['Sea Level Rise (mm)'].iloc[-1]
-        st.metric(
-            "Sea Level Rise (since 1950)", 
-            f"{latest_sea} mm",
-            f"{round(latest_sea - sea_level_data_filtered['Sea Level Rise (mm)'].iloc[0], 1)} mm"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
-    
+        st.metric("👱‍♀️👱‍♂️ Grandchildren", len(family_df[family_df['generation'] == 2]))
     with col4:
-        st.markdown('<div class="metric-card">', unsafe_allow_html=True)
-        latest_ice = ice_data_filtered['Arctic Ice Extent (million sq km)'].iloc[-1]
-        st.metric(
-            "Arctic Ice Extent", 
-            f"{latest_ice} M km²",
-            f"{round(latest_ice - ice_data_filtered['Arctic Ice Extent (million sq km)'].iloc[0], 2)} M km²",
-            delta_color="inverse"
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
+        st.metric("👶 Great-grandchildren", len(family_df[family_df['generation'] == 3]))
+        
+    # Additional statistics
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.metric("👨 Male Members", len([name for name in family_df['name'] if name.startswith(('Mohammed', 'Saleem', 'Talal', 'Khaled', 'Fawaz', 'Yazan', 'Yousef', 'Abdulmalik', 'Abdulilah', 'Noah', 'Abdulaziz', 'Abdulrahman', 'Abdulwahab', 'Malek', 'Omar', 'Faisal'))]))
+    with col2:
+        st.metric("👩 Female Members", len([name for name in family_df['name'] if not name.startswith(('Mohammed', 'Saleem', 'Talal', 'Khaled', 'Fawaz', 'Yazan', 'Yousef', 'Abdulmalik', 'Abdulilah', 'Noah', 'Abdulaziz', 'Abdulrahman', 'Abdulwahab', 'Malek', 'Omar', 'Faisal'))]))
+    with col3:
+        st.metric("🎓 Professionals", len(family_df[family_df['profession'] != "Child"]))
+    with col4:
+        st.metric("👨‍👩‍👧‍👦 Family Units", len(family_df[family_df['parent'].isnull() == False]['parent'].unique()))
     
-    # Tabs for different visualizations
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
-        "Temperature Trends", 
-        "CO₂ & Emissions", 
-        "Sea Level & Ice", 
-        "Climate Scenarios",
-        "Reports"
-    ])
-    
-    # Tab 1: Temperature Trends
-    with tab1:
-        st.header("Global Temperature Anomalies")
-        st.markdown("Temperature anomalies show the difference from the 1951-1980 average global temperature.")
-        
-        # Line chart for temperature anomalies
-        fig_temp = px.line(
-            temp_data_filtered, 
-            x="Year", 
-            y="Temperature Anomaly (°C)", 
-            color="Region",
-            title="Temperature Anomalies by Region",
-            labels={"Temperature Anomaly (°C)": "Temperature Anomaly (°C)"},
-            line_shape="spline",
-            render_mode="svg"
-        )
-        fig_temp.update_layout(
-            xaxis_title="Year",
-            yaxis_title="Temperature Anomaly (°C)",
-            legend_title="Region",
-            hovermode="x unified"
-        )
-        st.plotly_chart(fig_temp, use_container_width=True)
-        
-        # Heatmap of temperature anomalies by region and decade
-        st.subheader("Temperature Anomalies by Decade")
-        
-        # Create decade column
-        temp_data_filtered['Decade'] = (temp_data_filtered['Year'] // 10) * 10
-        decade_temp = temp_data_filtered.groupby(['Region', 'Decade'])['Temperature Anomaly (°C)'].mean().reset_index()
-        
-        fig_heatmap = px.density_heatmap(
-            decade_temp,
-            x="Decade",
-            y="Region",
-            z="Temperature Anomaly (°C)",
-            color_continuous_scale="RdBu_r",
-            title="Average Temperature Anomalies by Decade and Region"
-        )
-        fig_heatmap.update_layout(
-            xaxis_title="Decade",
-            yaxis_title="Region",
-            coloraxis_colorbar_title="Temp. Anomaly (°C)"
-        )
-        st.plotly_chart(fig_heatmap, use_container_width=True)
-    
-    # Tab 2: CO₂ & Emissions
-    with tab2:
-        st.header("CO₂ Concentration and Emissions")
-        
-        # Line chart for CO2 concentration
-        fig_co2 = px.line(
-            co2_data_filtered, 
-            x="Year", 
-            y="CO2 Concentration (ppm)",
-            title="Atmospheric CO₂ Concentration Over Time",
-            labels={"CO2 Concentration (ppm)": "CO₂ Concentration (ppm)"},
-            line_shape="spline"
-        )
-        fig_co2.update_layout(
-            xaxis_title="Year",
-            yaxis_title="CO₂ Concentration (ppm)",
-            hovermode="x unified"
-        )
-        st.plotly_chart(fig_co2, use_container_width=True)
-        
-        # Bar chart for emissions by country
-        st.subheader("CO₂ Emissions by Country")
-        
-        fig_emissions = px.bar(
-            emissions_data.sort_values('CO2 Emissions (Mt)', ascending=False),
-            x="Country",
-            y="CO2 Emissions (Mt)",
-            title="Annual CO₂ Emissions by Country",
-            color="CO2 Emissions (Mt)",
-            color_continuous_scale="Viridis"
-        )
-        fig_emissions.update_layout(
-            xaxis_title="Country",
-            yaxis_title="CO₂ Emissions (Million Tonnes)",
-            xaxis={'categoryorder':'total descending'}
-        )
-        st.plotly_chart(fig_emissions, use_container_width=True)
-        
-        # Pie chart for emissions distribution
-        st.subheader("Emissions Distribution")
-        
-        fig_pie = px.pie(
-            emissions_data,
-            values="CO2 Emissions (Mt)",
-            names="Country",
-            title="Share of Global CO₂ Emissions"
-        )
-        fig_pie.update_traces(textposition='inside', textinfo='percent+label')
-        st.plotly_chart(fig_pie, use_container_width=True)
-    
-    # Tab 3: Sea Level & Ice
-    with tab3:
-        st.header("Sea Level Rise and Arctic Ice Extent")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            # Area chart for sea level rise
-            fig_sea = px.area(
-                sea_level_data_filtered,
-                x="Year",
-                y="Sea Level Rise (mm)",
-                title="Global Sea Level Rise Since 1950",
-                labels={"Sea Level Rise (mm)": "Sea Level Rise (mm)"},
-                color_discrete_sequence=["#5D9CEC"]
-            )
-            fig_sea.update_layout(
-                xaxis_title="Year",
-                yaxis_title="Sea Level Rise (mm)",
-                hovermode="x unified"
-            )
-            st.plotly_chart(fig_sea, use_container_width=True)
-        
-        with col2:
-            # Line chart for Arctic ice extent
-            fig_ice = px.line(
-                ice_data_filtered,
-                x="Year",
-                y="Arctic Ice Extent (million sq km)",
-                title="Arctic Sea Ice Extent",
-                labels={"Arctic Ice Extent (million sq km)": "Ice Extent (million sq km)"},
-                line_shape="spline",
-                color_discrete_sequence=["#4FC1E9"]
-            )
-            fig_ice.update_layout(
-                xaxis_title="Year",
-                yaxis_title="Ice Extent (million sq km)",
-                hovermode="x unified"
-            )
-            st.plotly_chart(fig_ice, use_container_width=True)
-        
-        # Combined visualization
-        st.subheader("Relationship Between Temperature and Sea Ice")
-        
-        # Merge datasets
-        merged_data = pd.merge(
-            temp_data_filtered[temp_data_filtered['Region'] == 'Global'],
-            ice_data_filtered,
-            on='Year'
-        )
-        
-        fig_scatter = px.scatter(
-            merged_data,
-            x="Temperature Anomaly (°C)",
-            y="Arctic Ice Extent (million sq km)",
-            color="Year",
-            size="Year",
-            size_max=15,
-            title="Arctic Ice Extent vs. Global Temperature Anomaly",
-            labels={
-                "Temperature Anomaly (°C)": "Temperature Anomaly (°C)",
-                "Arctic Ice Extent (million sq km)": "Arctic Ice Extent (million sq km)"
-            },
-            color_continuous_scale="Viridis"
-        )
-        fig_scatter.update_layout(
-            xaxis_title="Temperature Anomaly (°C)",
-            yaxis_title="Arctic Ice Extent (million sq km)"
-        )
-        st.plotly_chart(fig_scatter, use_container_width=True)
-    
-    # Tab 4: Climate Scenarios
-    with tab4:
-        st.header("Climate Scenario Projections")
-        st.markdown("""
-        Explore different climate scenarios based on global emission reduction efforts.
-        These projections show potential temperature pathways until 2100.
-        """)
-        
-        # Get the latest global temperature as baseline
-        baseline_temp = temp_data[temp_data['Region'] == 'Global']['Temperature Anomaly (°C)'].iloc[-1]
-        
-        # Scenario selection
-        scenario = st.selectbox(
-            "Select Emission Reduction Scenario",
-            ["No Action (Business as Usual)", "Moderate Action", "Strong Action", "Paris Agreement Target (1.5°C)"]
-        )
-        
-        # Generate scenario data
-        scenario_data = generate_scenario_data(baseline_temp, scenario)
-        
-        # Plot scenario projection
-        fig_scenario = go.Figure()
-        
-        # Add the historical data
-        historical = temp_data[temp_data['Region'] == 'Global']
-        fig_scenario.add_trace(go.Scatter(
-            x=historical['Year'],
-            y=historical['Temperature Anomaly (°C)'],
-            name="Historical Data",
-            line=dict(color='black', width=2)
-        ))
-        
-        # Add the projection
-        fig_scenario.add_trace(go.Scatter(
-            x=scenario_data['Year'],
-            y=scenario_data['Temperature Projection (°C)'],
-            name=f"{scenario} Projection",
-            line=dict(color='red', width=2)
-        ))
-        
-        # Add uncertainty range
-        fig_scenario.add_trace(go.Scatter(
-            x=scenario_data['Year'].tolist() + scenario_data['Year'].tolist()[::-1],
-            y=scenario_data['Upper Bound'].tolist() + scenario_data['Lower Bound'].tolist()[::-1],
-            fill='toself',
-            fillcolor='rgba(255,0,0,0.2)',
-            line=dict(color='rgba(255,255,255,0)'),
-            name="Uncertainty Range"
-        ))
-        
-        # Add reference lines
-        fig_scenario.add_shape(
-            type="line",
-            x0=min(historical['Year']),
-            y0=1.5,
-            x1=2100,
-            y1=1.5,
-            line=dict(color="green", width=2, dash="dash"),
-            name="1.5°C Target"
-        )
-        
-        fig_scenario.add_shape(
-            type="line",
-            x0=min(historical['Year']),
-            y0=2.0,
-            x1=2100,
-            y1=2.0,
-            line=dict(color="orange", width=2, dash="dash"),
-            name="2.0°C Limit"
-        )
-        
-        fig_scenario.update_layout(
-            title=f"Temperature Projection: {scenario}",
-            xaxis_title="Year",
-            yaxis_title="Temperature Anomaly (°C)",
-            hovermode="x unified",
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=1.02,
-                xanchor="right",
-                x=1
-            )
-        )
-        
-        # Add annotations for the reference lines
-        fig_scenario.add_annotation(
-            x=2090,
-            y=1.5,
-            text="1.5°C Paris Target",
-            showarrow=False,
-            font=dict(color="green")
-        )
-        
-        fig_scenario.add_annotation(
-            x=2090,
-            y=2.0,
-            text="2.0°C Threshold",
-            showarrow=False,
-            font=dict(color="orange")
-        )
-        
-        st.plotly_chart(fig_scenario, use_container_width=True)
-        
-        # Scenario impact description
-        st.subheader("Potential Impacts")
-        
-        if scenario == "No Action (Business as Usual)":
-            st.error("""
-            ### High Risk Scenario
-            - Severe and irreversible impacts on ecosystems
-            - Significant sea level rise threatening coastal cities
-            - Extreme weather events becoming much more frequent
-            - Mass migration due to uninhabitable regions
-            - Substantial economic damage globally
-            """)
-        elif scenario == "Moderate Action":
-            st.warning("""
-            ### Medium Risk Scenario
-            - Significant stress on ecosystems and biodiversity
-            - Moderate sea level rise affecting coastal areas
-            - Increased frequency of extreme weather events
-            - Water scarcity in many regions
-            - Notable economic impacts requiring adaptation
-            """)
-        elif scenario == "Strong Action":
-            st.info("""
-            ### Lower Risk Scenario
-            - Ecosystems under pressure but many can adapt
-            - Limited sea level rise with manageable impacts
-            - Some increase in extreme weather events
-            - Adaptation measures can be effective
-            - Economic transition costs offset by avoided damages
-            """)
-        else:  # Paris Agreement
-            st.success("""
-            ### Minimum Risk Scenario
-            - Most ecosystems can adapt to changes
-            - Sea level rise limited to manageable levels
-            - Moderate increase in some extreme weather events
-            - Successful adaptation possible in most regions
-            - Economic benefits of green transition outweigh costs
-            """)
-    
-    # Tab 5: Reports
-    with tab5:
-        st.header("Data Reports")
-        st.markdown("Download data reports for further analysis.")
-        
-        report_type = st.selectbox(
-            "Select Report Type",
-            ["Temperature Data", "CO₂ Concentration Data", "Sea Level Data", "Arctic Ice Data", "Emissions Data"]
-        )
-        
-        if report_type == "Temperature Data":
-            st.dataframe(temp_data_filtered)
-            st.markdown(
-                get_report_download_link(
-                    temp_data_filtered, 
-                    "temperature_data.csv", 
-                    "Download Temperature Data CSV"
-                ), 
-                unsafe_allow_html=True
-            )
-        elif report_type == "CO₂ Concentration Data":
-            st.dataframe(co2_data_filtered)
-            st.markdown(
-                get_report_download_link(
-                    co2_data_filtered, 
-                    "co2_data.csv", 
-                    "Download CO₂ Data CSV"
-                ), 
-                unsafe_allow_html=True
-            )
-        elif report_type == "Sea Level Data":
-            st.dataframe(sea_level_data_filtered)
-            st.markdown(
-                get_report_download_link(
-                    sea_level_data_filtered, 
-                    "sea_level_data.csv", 
-                    "Download Sea Level Data CSV"
-                ), 
-                unsafe_allow_html=True
-            )
-        elif report_type == "Arctic Ice Data":
-            st.dataframe(ice_data_filtered)
-            st.markdown(
-                get_report_download_link(
-                    ice_data_filtered, 
-                    "arctic_ice_data.csv", 
-                    "Download Arctic Ice Data CSV"
-                ), 
-                unsafe_allow_html=True
-            )
-        else:  # Emissions Data
-            st.dataframe(emissions_data)
-            st.markdown(
-                get_report_download_link(
-                    emissions_data, 
-                    "emissions_data.csv", 
-                    "Download Emissions Data CSV"
-                ), 
-                unsafe_allow_html=True
-            )
-        
-        # Generate comprehensive report
-        st.subheader("Comprehensive Climate Report")
-        
-        if st.button("Generate Comprehensive Report"):
-            # Create a BytesIO object
-            buffer = BytesIO()
-            
-            # Create a pandas Excel writer using the BytesIO object
-            with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-                temp_data_filtered.to_excel(writer, sheet_name='Temperature Data', index=False)
-                co2_data_filtered.to_excel(writer, sheet_name='CO2 Data', index=False)
-                sea_level_data_filtered.to_excel(writer, sheet_name='Sea Level Data', index=False)
-                ice_data_filtered.to_excel(writer, sheet_name='Arctic Ice Data', index=False)
-                emissions_data.to_excel(writer, sheet_name='Emissions Data', index=False)
-            
-            # Get the value of the BytesIO buffer
-            excel_data = buffer.getvalue()
-            
-            # Convert to base64
-            b64 = base64.b64encode(excel_data).decode()
-            
-            # Generate download link
-            href = f'<a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" download="climate_report.xlsx">Download Comprehensive Excel Report</a>'
-            st.markdown(href, unsafe_allow_html=True)
-            
-            st.success("Comprehensive report generated successfully!")
-    
-    # Footer
-    st.markdown("---")
-    st.markdown(
-        """
-        <div style="text-align: center;">
-            <p>Climate Insights Dashboard | Created with Streamlit | Data for educational purposes</p>
-            <p>© 2023 Climate Insights Project</p>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Fun facts section
+    st.markdown("""
+    <div class="about-section" style="background-color: #fff3e0; margin-top: 30px;">
+        <h3>🎉 Fun Family Facts 🎉</h3>
+        <ul>
+            <li>Our family spans 4 generations! 👵👴👩👨👱‍♀️👱‍♂️👶</li>
+            <li>We have professionals in medicine 👩‍⚕️, engineering 🔧, finance 💰, and many other fields!</li>
+            <li>The family includes 13 great-grandchildren and counting! 👶</li>
+            <li>Our family tree continues to grow and flourish with each passing year! 🌱</li>
+            <li>If we had a family reunion, we'd need to reserve at least 5 tables at a restaurant! 🍽️</li>
+            <li>The most common profession in our family is related to finance and business! 💼</li>
+            <li>Our family has enough members to form two full basketball teams! 🏀</li>
+            <li>If we lined up all family members by height, we'd span the length of a tennis court! 📏</li>
+            <li>The combined age of all family members is over 1,000 years of life experience! 🎂</li>
+            <li>Our family's favorite holiday celebration requires at least 40 chairs! 🪑</li>
+            <li>We have family members born in every season of the year! 🌞❄️🍂🌷</li>
+            <li>If everyone in the family stood on each other's shoulders, we could reach the top of a 5-story building! 🏢</li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
-if __name__ == "__main__":
-    main()
+# Footer with emojis
+st.markdown("""
+<footer>
+    <p>✨ Our Family Tree 2025 ✨ | Created with ❤️ using Streamlit | 👨‍👩‍👧‍👦</p>
+</footer>
+""", unsafe_allow_html=True)
