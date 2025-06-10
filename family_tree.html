@@ -1,127 +1,93 @@
 <html>
-    <head>
-        <meta charset="utf-8">
-        
-            <script src="lib/bindings/utils.js"></script>
-            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            
-        
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/dist/vis-network.min.css" type="text/css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"> </script>
 <center>
-<h1></h1>
+<h1>JSC Projects Network</h1>
 </center>
 
-<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
-<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
-        <link
-          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
-          crossorigin="anonymous"
-        />
-        <script
-          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
-          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
-          crossorigin="anonymous"
-        ></script>
+<!-- Create a div where the graph will take place -->
+<div id="mynetwork"></div>
 
+<script type="text/javascript">
 
-        <center>
-          <h1></h1>
-        </center>
-        <style type="text/css">
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
 
-             #mynetwork {
-                 width: 100%;
-                 height: 600px;
-                 background-color: #ffffff;
-                 border: 1px solid lightgray;
-                 position: relative;
-                 float: left;
-             }
-
-             
-
-             
-
-             
-        </style>
-    </head>
-
-
-    <body>
-        <div class="card" style="width: 100%">
-            
-            
-            <div id="mynetwork" class="card-body"></div>
-        </div>
-
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
         
         
 
-        <script type="text/javascript">
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Residential", "label": "Residential", "shape": "circle", "size": 30, "title": "Residential"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Commercial", "label": "Commercial", "shape": "circle", "size": 30, "title": "Commercial"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Hospitality", "label": "Hospitality", "shape": "circle", "size": 30, "title": "Hospitality"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Industrial", "label": "Industrial", "shape": "circle", "size": 30, "title": "Industrial"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Healthcare", "label": "Healthcare", "shape": "circle", "size": 30, "title": "Healthcare"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 0, "id": "Infrastructure", "label": "Infrastructure", "shape": "circle", "size": 30, "title": "Infrastructure"}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Al Madinah Towers", "label": "Al Madinah Towers", "shape": "circle", "size": 30, "title": "Al Madinah Towers\u003cbr\u003eMadinah, Saudi Arabia\u003cbr\u003eLuxury residential towers with 200+ premium apartments and state-of-the-art amenities."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Jeddah Business Center", "label": "Jeddah Business Center", "shape": "circle", "size": 30, "title": "Jeddah Business Center\u003cbr\u003eJeddah, Saudi Arabia\u003cbr\u003eModern office complex with smart building technology and sustainable design features."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Red Sea Resort", "label": "Red Sea Resort", "shape": "circle", "size": 30, "title": "Red Sea Resort\u003cbr\u003eRed Sea Coast, Saudi Arabia\u003cbr\u003eLuxury beachfront resort with private villas and world-class hospitality facilities."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Riyadh Industrial Park", "label": "Riyadh Industrial Park", "shape": "circle", "size": 30, "title": "Riyadh Industrial Park\u003cbr\u003eRiyadh, Saudi Arabia\u003cbr\u003eLarge-scale industrial development with warehousing and manufacturing facilities."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "King Abdullah Medical City", "label": "King Abdullah Medical City", "shape": "circle", "size": 30, "title": "King Abdullah Medical City\u003cbr\u003eMakkah, Saudi Arabia\u003cbr\u003eState-of-the-art medical facility with specialized treatment centers and research labs."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Dammam Highway Extension", "label": "Dammam Highway Extension", "shape": "circle", "size": 30, "title": "Dammam Highway Extension\u003cbr\u003eDammam, Saudi Arabia\u003cbr\u003eMajor infrastructure project extending the highway network with bridges and interchanges."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Al Khobar Shopping Mall", "label": "Al Khobar Shopping Mall", "shape": "circle", "size": 30, "title": "Al Khobar Shopping Mall\u003cbr\u003eAl Khobar, Saudi Arabia\u003cbr\u003ePremium retail destination with international brands, entertainment, and dining options."}, {"color": {"background": "#e6eef8", "border": "#1a3c6e"}, "font": {"size": 16}, "group": 1, "id": "Tabuk Residential Community", "label": "Tabuk Residential Community", "shape": "circle", "size": 30, "title": "Tabuk Residential Community\u003cbr\u003eTabuk, Saudi Arabia\u003cbr\u003eIntegrated residential community with schools, parks, and community facilities."}]);
+        edges = new vis.DataSet([{"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Al Madinah Towers", "to": "Residential", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Jeddah Business Center", "to": "Commercial", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Red Sea Resort", "to": "Hospitality", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Riyadh Industrial Park", "to": "Industrial", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "King Abdullah Medical City", "to": "Healthcare", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Dammam Highway Extension", "to": "Infrastructure", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Al Khobar Shopping Mall", "to": "Commercial", "width": 2}, {"color": {"color": "#f7a100", "highlight": "#ff8c00"}, "from": "Tabuk Residential Community", "to": "Residential", "width": 2}]);
 
-              // initialize global variables.
-              var edges;
-              var nodes;
-              var allNodes;
-              var allEdges;
-              var nodeColors;
-              var originalNodes;
-              var network;
-              var container;
-              var options, data;
-              var filter = {
-                  item : '',
-                  property : '',
-                  value : []
-              };
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
 
-              
+        var options = {
+    "nodes": {
+        "shape": "circle",
+        "size": 30,
+        "font": {
+          "size": 16,
+          "face": "Montserrat"
+        },
+        "borderWidth": 3,
+        "shadow": true,
+        "color": {
+          "border": "#1a3c6e",
+          "background": "#e6eef8"
+        }
+      },
+      "edges": {
+        "color": {
+          "color": "#f7a100",
+          "highlight": "#ff8c00"
+        },
+        "width": 2,
+        "smooth": {
+          "type": "continuous",
+          "roundness": 0.5
+        }
+      },
+      "physics": {
+        "forceAtlas2Based": {
+          "gravitationalConstant": -50,
+          "centralGravity": 0.01,
+          "springLength": 200,
+          "springConstant": 0.08
+        },
+        "solver": "forceAtlas2Based"
+      }
+}
+        
 
-              
+        
 
-              // This method is responsible for drawing the graph, returns the drawn network
-              function drawGraph() {
-                  var container = document.getElementById('mynetwork');
-
-                  
-
-                  // parsing and collecting nodes and edges from the python
-                  nodes = new vis.DataSet([{"font": {"color": "black"}, "group": 0, "id": "Saleem", "label": "Saleem", "shape": "dot", "size": 10, "title": "Saleem \ud83d\udc74\u003cbr\u003eProfession: Grandfather"}, {"font": {"color": "black"}, "group": 1, "id": "Talal", "label": "Talal", "shape": "dot", "size": 10, "title": "Talal \ud83d\udc68\u003cbr\u003eProfession: Father"}, {"font": {"color": "black"}, "group": 1, "id": "Laila", "label": "Laila", "shape": "dot", "size": 10, "title": "Laila \ud83d\udc69\u003cbr\u003eProfession: Mother"}, {"font": {"color": "black"}, "group": 1, "id": "Maha", "label": "Maha", "shape": "dot", "size": 10, "title": "Maha \ud83d\udc69\u003cbr\u003eProfession: Mother"}, {"font": {"color": "black"}, "group": 1, "id": "Mona", "label": "Mona", "shape": "dot", "size": 10, "title": "Mona \ud83d\udc69\u003cbr\u003eProfession: Mother"}, {"font": {"color": "black"}, "group": 2, "id": "Ghada", "label": "Ghada", "shape": "dot", "size": 10, "title": "Ghada \ud83d\udc69\u200d\u2695\ufe0f\u003cbr\u003eProfession: Obstetrics \u0026 Gynecology Consultant"}, {"font": {"color": "black"}, "group": 2, "id": "Dalia", "label": "Dalia", "shape": "dot", "size": 10, "title": "Dalia \ud83d\udc69\u200d\ud83d\udcbc\u003cbr\u003eProfession: Human Resources Management"}, {"font": {"color": "black"}, "group": 2, "id": "Dima", "label": "Dima", "shape": "dot", "size": 10, "title": "Dima \ud83e\uddb7\u003cbr\u003eProfession: Orthodontics Consultant"}, {"font": {"color": "black"}, "group": 2, "id": "Aya", "label": "Aya", "shape": "dot", "size": 10, "title": "Aya \ud83d\udcb0\u003cbr\u003eProfession: Finance"}, {"font": {"color": "black"}, "group": 2, "id": "Saleem Jr", "label": "Saleem Jr", "shape": "dot", "size": 10, "title": "Saleem Jr \ud83d\udcbb\u003cbr\u003eProfession: Network Systems Engineering"}, {"font": {"color": "black"}, "group": 2, "id": "Mohammed", "label": "Mohammed", "shape": "dot", "size": 10, "title": "Mohammed \ud83d\udcca\u003cbr\u003eProfession: Management Information Systems"}, {"font": {"color": "black"}, "group": 2, "id": "Faisal", "label": "Faisal", "shape": "dot", "size": 10, "title": "Faisal \ud83d\udd27\u003cbr\u003eProfession: Mechanical Engineering - Student"}, {"font": {"color": "black"}, "group": 2, "id": "Omar", "label": "Omar", "shape": "dot", "size": 10, "title": "Omar \ud83c\udf92\u003cbr\u003eProfession: Middle School Student"}, {"font": {"color": "black"}, "group": 2, "id": "Kholoud", "label": "Kholoud", "shape": "dot", "size": 10, "title": "Kholoud \ud83e\uddea\u003cbr\u003eProfession: Biochemistry \u0026 Nutrition"}, {"font": {"color": "black"}, "group": 2, "id": "Khaled", "label": "Khaled", "shape": "dot", "size": 10, "title": "Khaled \ud83d\udcca\u003cbr\u003eProfession: Management Information Systems"}, {"font": {"color": "black"}, "group": 2, "id": "Soha", "label": "Soha", "shape": "dot", "size": 10, "title": "Soha \ud83d\udc69\u200d\ud83d\udcbc\u003cbr\u003eProfession: Human Resources Management"}, {"font": {"color": "black"}, "group": 2, "id": "Lamia", "label": "Lamia", "shape": "dot", "size": 10, "title": "Lamia \u2697\ufe0f\u003cbr\u003eProfession: Chemical Engineering"}, {"font": {"color": "black"}, "group": 2, "id": "Basma", "label": "Basma", "shape": "dot", "size": 10, "title": "Basma \ud83d\udcb0\u003cbr\u003eProfession: Finance"}, {"font": {"color": "black"}, "group": 2, "id": "Ruba", "label": "Ruba", "shape": "dot", "size": 10, "title": "Ruba \ud83d\udcdd\u003cbr\u003eProfession: Accounting"}, {"font": {"color": "black"}, "group": 2, "id": "Fawaz", "label": "Fawaz", "shape": "dot", "size": 10, "title": "Fawaz \u2699\ufe0f\u003cbr\u003eProfession: Mechanical Engineering"}, {"font": {"color": "black"}, "group": 2, "id": "Mirna", "label": "Mirna", "shape": "dot", "size": 10, "title": "Mirna \ud83d\udd2c\u003cbr\u003eProfession: Biochemistry"}, {"font": {"color": "black"}, "group": 2, "id": "Mayar", "label": "Mayar", "shape": "dot", "size": 10, "title": "Mayar \ud83d\udcc8\u003cbr\u003eProfession: Economics"}, {"font": {"color": "black"}, "group": 2, "id": "Miran", "label": "Miran", "shape": "dot", "size": 10, "title": "Miran \ud83d\udd12\u003cbr\u003eProfession: Network Security"}, {"font": {"color": "black"}, "group": 2, "id": "Miray", "label": "Miray", "shape": "dot", "size": 10, "title": "Miray \ud83d\udd2d\u003cbr\u003eProfession: Science"}, {"font": {"color": "black"}, "group": 2, "id": "Abdulaziz", "label": "Abdulaziz", "shape": "dot", "size": 10, "title": "Abdulaziz \ud83d\udc20\u003cbr\u003eProfession: Marine Biology"}, {"font": {"color": "black"}, "group": 2, "id": "Abdulrahman", "label": "Abdulrahman", "shape": "dot", "size": 10, "title": "Abdulrahman \ud83c\udf10\u003cbr\u003eProfession: Network Technology"}, {"font": {"color": "black"}, "group": 2, "id": "Abdulwahab", "label": "Abdulwahab", "shape": "dot", "size": 10, "title": "Abdulwahab \ud83d\udcdd\u003cbr\u003eProfession: Accounting"}, {"font": {"color": "black"}, "group": 3, "id": "Layan", "label": "Layan", "shape": "dot", "size": 10, "title": "Layan \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Rima", "label": "Rima", "shape": "dot", "size": 10, "title": "Rima \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Talia", "label": "Talia", "shape": "dot", "size": 10, "title": "Talia \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Yazan", "label": "Yazan", "shape": "dot", "size": 10, "title": "Yazan \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Zeina", "label": "Zeina", "shape": "dot", "size": 10, "title": "Zeina \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Yousef", "label": "Yousef", "shape": "dot", "size": 10, "title": "Yousef \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Abdulmalik", "label": "Abdulmalik", "shape": "dot", "size": 10, "title": "Abdulmalik \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Abdulilah", "label": "Abdulilah", "shape": "dot", "size": 10, "title": "Abdulilah \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Noah", "label": "Noah", "shape": "dot", "size": 10, "title": "Noah \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Salma", "label": "Salma", "shape": "dot", "size": 10, "title": "Salma \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Mohammed Jr", "label": "Mohammed Jr", "shape": "dot", "size": 10, "title": "Mohammed Jr \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Yara", "label": "Yara", "shape": "dot", "size": 10, "title": "Yara \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 3, "id": "Malek", "label": "Malek", "shape": "dot", "size": 10, "title": "Malek \ud83d\udc76\u003cbr\u003eProfession: Child"}, {"font": {"color": "black"}, "group": 0, "id": "Samia", "label": "Samia", "shape": "dot", "size": 10, "title": "Samia \ud83d\udc75\u003cbr\u003eProfession: Grandmother"}]);
-                  edges = new vis.DataSet([{"arrows": "to", "from": "Saleem", "to": "Talal", "width": 1}, {"arrows": "to", "from": "Saleem", "to": "Laila", "width": 1}, {"arrows": "to", "from": "Saleem", "to": "Maha", "width": 1}, {"arrows": "to", "from": "Saleem", "to": "Mona", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Ghada", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Dalia", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Dima", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Aya", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Saleem Jr", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Mohammed", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Faisal", "width": 1}, {"arrows": "to", "from": "Talal", "to": "Omar", "width": 1}, {"arrows": "to", "from": "Laila", "to": "Kholoud", "width": 1}, {"arrows": "to", "from": "Laila", "to": "Khaled", "width": 1}, {"arrows": "to", "from": "Maha", "to": "Soha", "width": 1}, {"arrows": "to", "from": "Maha", "to": "Lamia", "width": 1}, {"arrows": "to", "from": "Maha", "to": "Basma", "width": 1}, {"arrows": "to", "from": "Maha", "to": "Ruba", "width": 1}, {"arrows": "to", "from": "Maha", "to": "Fawaz", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Mirna", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Mayar", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Miran", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Miray", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Abdulaziz", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Abdulrahman", "width": 1}, {"arrows": "to", "from": "Mona", "to": "Abdulwahab", "width": 1}, {"arrows": "to", "from": "Ghada", "to": "Layan", "width": 1}, {"arrows": "to", "from": "Dalia", "to": "Rima", "width": 1}, {"arrows": "to", "from": "Dalia", "to": "Talia", "width": 1}, {"arrows": "to", "from": "Dima", "to": "Yazan", "width": 1}, {"arrows": "to", "from": "Dima", "to": "Zeina", "width": 1}, {"arrows": "to", "from": "Aya", "to": "Yousef", "width": 1}, {"arrows": "to", "from": "Soha", "to": "Abdulmalik", "width": 1}, {"arrows": "to", "from": "Soha", "to": "Abdulilah", "width": 1}, {"arrows": "to", "from": "Soha", "to": "Noah", "width": 1}, {"arrows": "to", "from": "Lamia", "to": "Salma", "width": 1}, {"arrows": "to", "from": "Ruba", "to": "Mohammed Jr", "width": 1}, {"arrows": "to", "from": "Ruba", "to": "Yara", "width": 1}, {"arrows": "to", "from": "Fawaz", "to": "Malek", "width": 1}]);
-
-                  nodeColors = {};
-                  allNodes = nodes.get({ returnType: "Object" });
-                  for (nodeId in allNodes) {
-                    nodeColors[nodeId] = allNodes[nodeId].color;
-                  }
-                  allEdges = edges.get({ returnType: "Object" });
-                  // adding nodes and edges to the graph
-                  data = {nodes: nodes, edges: edges};
-
-                  var options = {"nodes": {"shape": "circle", "size": 30, "font": {"size": 16, "face": "Tahoma"}, "borderWidth": 3, "shadow": true, "color": {"border": "#2c3e50", "background": "#ecf0f1"}}, "edges": {"color": {"color": "#3498db", "highlight": "#e74c3c"}, "width": 3, "smooth": {"type": "continuous", "roundness": 0.5}}, "physics": {"hierarchicalRepulsion": {"centralGravity": 0.5, "springLength": 150, "springConstant": 0.01, "nodeDistance": 120, "damping": 0.09}, "solver": "hierarchicalRepulsion"}, "layout": {"hierarchical": {"enabled": true, "levelSeparation": 150, "nodeSpacing": 120, "treeSpacing": 200, "direction": "UD"}}};
-
-                  
-
-
-                  
-
-                  network = new vis.Network(container, data, options);
-
-                  
-
-                  
-
-                  
+        network = new vis.Network(container, data, options);
+	 
+        
 
 
-                  
+        
 
-                  return network;
+        return network;
 
-              }
-              drawGraph();
-        </script>
-    </body>
+    }
+
+    drawGraph();
+
+</script>
+</head>
+<body>
+<div id="mynetwork"></div>
+</body>
 </html>
