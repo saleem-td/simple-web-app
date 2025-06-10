@@ -22,6 +22,11 @@ body {
     background-color: #f9f9f9;
     direction: rtl;
     text-align: right;
+    background: linear-gradient(rgba(249, 249, 249, 0.9), rgba(249, 249, 249, 0.9)), 
+                url("https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop");
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 
 /* Header styling */
@@ -58,11 +63,12 @@ h1, h2, h3 {
     line-height: 1.6;
     margin-bottom: 30px;
     padding: 20px;
-    background-color: #e6eef8;
+    background-color: rgba(230, 238, 248, 0.9);
     border-right: 4px solid #f7a100;
     border-radius: 8px 0 0 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     text-align: right;
+    backdrop-filter: blur(5px);
 }
 
 /* Project cards */
@@ -75,19 +81,20 @@ h1, h2, h3 {
 }
 
 .project-card {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-top: 4px solid #f7a100;
     text-align: right;
+    backdrop-filter: blur(5px);
 }
 
 .project-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .project-card h3 {
@@ -100,19 +107,20 @@ h1, h2, h3 {
 
 /* Service cards */
 .service-card {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-right: 4px solid #1a3c6e;
     text-align: right;
+    backdrop-filter: blur(5px);
 }
 
 .service-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .service-card h3 {
@@ -125,12 +133,13 @@ h1, h2, h3 {
 
 /* About section */
 .about-section {
-    background-color: #e6eef8;
+    background-color: rgba(230, 238, 248, 0.9);
     padding: 25px;
     border-radius: 12px;
     margin-bottom: 30px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     text-align: right;
+    backdrop-filter: blur(5px);
 }
 
 .about-section h3 {
@@ -147,8 +156,9 @@ footer {
     border-top: 1px solid #eee;
     color: white;
     font-size: 14px;
-    background-color: #1a3c6e;
+    background-color: rgba(26, 60, 110, 0.95);
     border-radius: 8px;
+    backdrop-filter: blur(5px);
 }
 
 /* Metrics styling */
@@ -165,11 +175,12 @@ div[data-testid="stMetricLabel"] {
 
 /* Project showcase container */
 .project-showcase {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 15px;
     margin-bottom: 20px;
+    backdrop-filter: blur(5px);
 }
 
 /* Service categories */
@@ -199,45 +210,62 @@ div[data-testid="stMetricLabel"] {
 
 /* Hero section */
 .hero-section {
-    background: linear-gradient(135deg, #1a3c6e 0%, #2a5ca3 100%);
+    background: linear-gradient(135deg, rgba(26, 60, 110, 0.9) 0%, rgba(42, 92, 163, 0.9) 100%), 
+                url("https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=2070&auto=format&fit=crop");
+    background-size: cover;
+    background-position: center;
     color: white;
-    padding: 40px;
+    padding: 60px 40px;
     border-radius: 12px;
     margin-bottom: 30px;
     text-align: center;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
 }
 
 .hero-section h1 {
     color: white;
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .hero-section p {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 30px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 .cta-button {
     background-color: #f7a100;
     color: white;
-    padding: 12px 24px;
+    padding: 14px 28px;
     border-radius: 30px;
     font-weight: bold;
     text-decoration: none;
     display: inline-block;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(247, 161, 0, 0.4);
 }
 
 .cta-button:hover {
     background-color: #e69500;
     transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(247, 161, 0, 0.5);
 }
 
 /* Team member styling */
 .team-member {
     text-align: center;
     padding: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.team-member:hover {
+    transform: translateY(-5px);
 }
 
 .team-member img {
@@ -246,17 +274,24 @@ div[data-testid="stMetricLabel"] {
     height: 150px;
     object-fit: cover;
     border: 4px solid #f7a100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 /* Testimonial styling */
 .testimonial {
-    background-color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     position: relative;
     text-align: right;
+    backdrop-filter: blur(5px);
+    transition: transform 0.3s ease;
+}
+
+.testimonial:hover {
+    transform: translateY(-5px);
 }
 
 .testimonial:before {
@@ -278,10 +313,48 @@ div[data-testid="stMetricLabel"] {
     text-align: left;
     font-weight: bold;
     color: #1a3c6e;
+    margin-top: 15px;
 }
 
 /* Add Tajawal font for Arabic text */
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+
+/* Streamlit container styling */
+.stApp {
+    background-color: transparent;
+}
+
+div[data-testid="stVerticalBlock"] {
+    background-color: rgba(249, 249, 249, 0.7);
+    padding: 20px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+input, textarea {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 100%;
+    margin-bottom: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+}
+
+input:focus, textarea:focus {
+    border-color: #f7a100;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(247, 161, 0, 0.2);
+}
+
+/* Info box styling */
+div[data-testid="stInfoBox"] {
+    background-color: rgba(230, 238, 248, 0.9) !important;
+    border-color: #1a3c6e !important;
+    backdrop-filter: blur(5px);
+}
 """
 
 # Apply CSS
@@ -460,14 +533,12 @@ with tab4:
     """, unsafe_allow_html=True)
     
     # About section
-    st.markdown("""
-    <div class="about-section">
-        <h3>✨ قصتنا ✨</h3>
-        <p>تأسست شركة نجمة جدة للمقاولات في عام 2003، ونمت من مقاول محلي صغير إلى واحدة من أكثر شركات البناء احترامًا في المملكة العربية السعودية. مع المقر الرئيسي في جدة ومكاتب في جميع أنحاء المملكة، أكملنا بنجاح أكثر من 200 مشروع تتراوح من التطورات السكنية الفاخرة إلى أعمال البنية التحتية واسعة النطاق.</p>
-        
-        <p>التزامنا بالجودة والابتكار ورضا العملاء جعل شركة نجمة جدة شريكًا موثوقًا به لعملاء القطاعين العام والخاص. نحن نجمع بين القيم التقليدية وتقنيات البناء المتطورة لتقديم مشاريع تصمد أمام اختبار الزمن.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("<div class='about-section'>", unsafe_allow_html=True)
+    st.markdown("<h3>✨ قصتنا ✨</h3>", unsafe_allow_html=True)
+    st.markdown("<p>تأسست شركة نجمة جدة للمقاولات في عام 2003، ونمت من مقاول محلي صغير إلى واحدة من أكثر شركات البناء احترامًا في المملكة العربية السعودية. مع المقر الرئيسي في جدة ومكاتب في جميع أنحاء المملكة، أكملنا بنجاح أكثر من 200 مشروع تتراوح من التطورات السكنية الفاخرة إلى أعمال البنية التحتية واسعة النطاق.</p>", unsafe_allow_html=True)
+    
+    st.markdown("<p>التزامنا بالجودة والابتكار ورضا العملاء جعل شركة نجمة جدة شريكًا موثوقًا به لعملاء القطاعين العام والخاص. نحن نجمع بين القيم التقليدية وتقنيات البناء المتطورة لتقديم مشاريع تصمد أمام اختبار الزمن.</p>", unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
     
     # Vision & Mission
     st.markdown('<div class="about-section" style="background-color: #f0f7ff;">', unsafe_allow_html=True)
@@ -744,23 +815,23 @@ with tab1:
         """, unsafe_allow_html=True)
     
     with col2:
+        st.markdown("<div style='background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);'>", unsafe_allow_html=True)
+        st.markdown("<h3>معلومات الاتصال</h3>", unsafe_allow_html=True)
+        st.markdown("<p><strong>العنوان:</strong> طريق الملك فهد، حي الحمراء، جدة، المملكة العربية السعودية</p>", unsafe_allow_html=True)
+        st.markdown("<p><strong>الهاتف:</strong> 6789 345 12 966+</p>", unsafe_allow_html=True)
+        st.markdown("<p><strong>البريد الإلكتروني:</strong> info@jeddahstarcompany.com</p>", unsafe_allow_html=True)
+        st.markdown("<p><strong>ساعات العمل:</strong> الأحد - الخميس: 8:00 صباحًا - 5:00 مساءً</p>", unsafe_allow_html=True)
+        
+        st.markdown("<h4 style='margin-top: 20px;'>مكاتبنا</h4>", unsafe_allow_html=True)
         st.markdown("""
-        <div style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3>معلومات الاتصال</h3>
-            <p><strong>العنوان:</strong> طريق الملك فهد، حي الحمراء، جدة، المملكة العربية السعودية</p>
-            <p><strong>الهاتف:</strong> 6789 345 12 966+</p>
-            <p><strong>البريد الإلكتروني:</strong> info@jeddahstarcompany.com</p>
-            <p><strong>ساعات العمل:</strong> الأحد - الخميس: 8:00 صباحًا - 5:00 مساءً</p>
-            
-            <h4 style="margin-top: 20px;">مكاتبنا</h4>
-            <ul style="list-style-type: none; padding-right: 0;">
-                <li style="margin-bottom: 10px;">🏢 جدة (المقر الرئيسي)</li>
-                <li style="margin-bottom: 10px;">🏢 الرياض</li>
-                <li style="margin-bottom: 10px;">🏢 الدمام</li>
-                <li style="margin-bottom: 10px;">🏢 مكة المكرمة</li>
-            </ul>
-        </div>
+        <ul style="list-style-type: none; padding-right: 0;">
+            <li style="margin-bottom: 10px;">🏢 جدة (المقر الرئيسي)</li>
+            <li style="margin-bottom: 10px;">🏢 الرياض</li>
+            <li style="margin-bottom: 10px;">🏢 الدمام</li>
+            <li style="margin-bottom: 10px;">🏢 مكة المكرمة</li>
+        </ul>
         """, unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
     
     # Map placeholder
     st.markdown("""
