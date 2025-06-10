@@ -343,8 +343,6 @@ services = {
         "category": "service-residential"
     }
 }
-}
-
 projects = {
     "أبراج المدينة": {
         "icon": "🏢",
