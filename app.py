@@ -7,7 +7,7 @@ import os
 
 # Page configuration
 st.set_page_config(
-    page_title="JSC - Jeddah Star Company",
+    page_title="شركة نجمة جدة للمقاولات",
     page_icon="🏗️",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -17,20 +17,24 @@ st.set_page_config(
 css = """
 /* Main styling */
 body {
-    font-family: 'Montserrat', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Tajawal', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     background-color: #f9f9f9;
+    direction: rtl;
+    text-align: right;
 }
 
 /* Header styling */
 h1, h2, h3 {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Tajawal', sans-serif;
     color: #1a3c6e;
     font-weight: 700;
+    text-align: right;
 }
 
 .stTabs [data-baseweb="tab-list"] {
     gap: 24px;
+    flex-direction: row-reverse;
 }
 
 .stTabs [data-baseweb="tab"] {
@@ -55,9 +59,10 @@ h1, h2, h3 {
     margin-bottom: 30px;
     padding: 20px;
     background-color: #e6eef8;
-    border-left: 4px solid #f7a100;
-    border-radius: 0 8px 8px 0;
+    border-right: 4px solid #f7a100;
+    border-radius: 8px 0 0 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    text-align: right;
 }
 
 /* Project cards */
@@ -66,6 +71,7 @@ h1, h2, h3 {
     flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
+    direction: rtl;
 }
 
 .project-card {
@@ -76,6 +82,7 @@ h1, h2, h3 {
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-top: 4px solid #f7a100;
+    text-align: right;
 }
 
 .project-card:hover {
@@ -88,6 +95,7 @@ h1, h2, h3 {
     color: #1a3c6e;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
+    text-align: right;
 }
 
 /* Service cards */
@@ -98,7 +106,8 @@ h1, h2, h3 {
     padding: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-left: 4px solid #1a3c6e;
+    border-right: 4px solid #1a3c6e;
+    text-align: right;
 }
 
 .service-card:hover {
@@ -111,6 +120,7 @@ h1, h2, h3 {
     color: #1a3c6e;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
+    text-align: right;
 }
 
 /* About section */
@@ -120,11 +130,13 @@ h1, h2, h3 {
     border-radius: 12px;
     margin-bottom: 30px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    text-align: right;
 }
 
 .about-section h3 {
     color: #1a3c6e;
     margin-top: 20px;
+    text-align: right;
 }
 
 /* Footer */
@@ -133,10 +145,9 @@ footer {
     padding: 20px;
     margin-top: 40px;
     border-top: 1px solid #eee;
-    color: #7f8c8d;
+    color: white;
     font-size: 14px;
     background-color: #1a3c6e;
-    color: white;
     border-radius: 8px;
 }
 
@@ -162,27 +173,27 @@ div[data-testid="stMetricLabel"] {
 }
 
 /* Service categories */
-.service-residential { border-left-color: #4caf50; }
-.service-commercial { border-left-color: #2196f3; }
-.service-industrial { border-left-color: #f44336; }
-.service-infrastructure { border-left-color: #9c27b0; }
+.service-residential { border-right-color: #4caf50; }
+.service-commercial { border-right-color: #2196f3; }
+.service-industrial { border-right-color: #f44336; }
+.service-infrastructure { border-right-color: #9c27b0; }
 
 /* Icon styling */
 .icon {
     font-size: 24px;
-    margin-right: 8px;
+    margin-left: 8px;
     vertical-align: middle;
 }
 
 .title-icon {
     font-size: 32px;
-    margin-right: 10px;
+    margin-left: 10px;
     vertical-align: middle;
 }
 
 .card-icon {
     font-size: 20px;
-    float: right;
+    float: left;
     margin-top: -30px;
 }
 
@@ -245,6 +256,7 @@ div[data-testid="stMetricLabel"] {
     margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     position: relative;
+    text-align: right;
 }
 
 .testimonial:before {
@@ -253,20 +265,23 @@ div[data-testid="stMetricLabel"] {
     color: #f7a100;
     position: absolute;
     top: 10px;
-    left: 10px;
+    right: 10px;
     opacity: 0.2;
 }
 
 .testimonial-content {
-    padding-left: 30px;
+    padding-right: 30px;
     font-style: italic;
 }
 
 .testimonial-author {
-    text-align: right;
+    text-align: left;
     font-weight: bold;
     color: #1a3c6e;
 }
+
+/* Add Tajawal font for Arabic text */
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
 """
 
 # Apply CSS
@@ -276,175 +291,183 @@ st.markdown(f'<style>{css}</style>', unsafe_allow_html=True)
 st.markdown("""
 <div class="hero-section">
     <span class="title-icon">🏗️</span>
-    <h1>Jeddah Star Company</h1>
-    <p>Building Excellence, Delivering Quality - Your Premier Construction Partner in Saudi Arabia</p>
-    <a href="#contact" class="cta-button">Contact Us Today</a>
+    <h1>شركة نجمة جدة للمقاولات</h1>
+    <p>التميز في قطاع الإنشاءات العامة - شركة سعودية متخصصة في مجال التشييد والبناء والمقاولات العامة</p>
+    <a href="#contact" class="cta-button">تواصل معنا</a>
 </div>
 """, unsafe_allow_html=True)
 
 # Create tabs with icons
-tab1, tab2, tab3, tab4 = st.tabs(["🏢 About Us", "🛠️ Our Services", "🏗️ Projects", "📞 Contact"])
+tab1, tab2, tab3, tab4 = st.tabs(["📞 تواصل معنا", "🏗️ مشاريعنا", "🛠️ خدماتنا", "🏢 من نحن"])
 
 # Define company data
 services = {
-    "Residential Construction": {
+    "أعمال التشطيبات": {
         "icon": "🏠",
-        "description": "Custom homes, apartment buildings, and residential complexes built to the highest standards.",
+        "description": "لياسة ودهانات وجيبسون بورد وسيراميك ورخام وزجاج والمنيوم والأعمال الخشبية وكل ما يجب تنفيذه لإتمام الأعمال حسب أصول الصنعة",
         "category": "service-residential"
     },
-    "Commercial Construction": {
+    "أعمال الخرسانات": {
         "icon": "🏢",
-        "description": "Office buildings, retail spaces, hotels, and other commercial properties designed for success.",
+        "description": "نجارة وحدادة وشدة معدنية ومباني وعزل مع التنفيذ حسب المواصفات المطلوبة للحديد والخرسانات، والبلوك، وكل ما يجب تنفيذه لإتمام الأعمال حسب أصول الصنعة",
         "category": "service-commercial"
     },
-    "Industrial Construction": {
+    "أعمال الإلكتروميكانيك": {
         "icon": "🏭",
-        "description": "Factories, warehouses, and industrial facilities built for efficiency and durability.",
+        "description": "الكهرباء وتمديداتها وأنظمة التكييف والتبريد وأنظمة الإطفاء والحريق",
         "category": "service-industrial"
     },
-    "Infrastructure Development": {
+    "تطوير البنية التحتية": {
         "icon": "🌉",
-        "description": "Roads, bridges, and public works projects that connect communities.",
+        "description": "الطرق والجسور ومشاريع الأشغال العامة التي تربط المجتمعات",
         "category": "service-infrastructure"
     },
-    "Renovation & Remodeling": {
+    "التجديد وإعادة التشكيل": {
         "icon": "🔨",
-        "description": "Transform existing spaces with our expert renovation and remodeling services.",
+        "description": "تحويل المساحات الموجودة بخدمات التجديد وإعادة التشكيل الخبيرة لدينا",
         "category": "service-residential"
     },
-    "Project Management": {
+    "إدارة المشاريع": {
         "icon": "📋",
-        "description": "End-to-end project management ensuring on-time, on-budget delivery.",
+        "description": "إدارة المشاريع من البداية إلى النهاية لضمان التسليم في الوقت المحدد وضمن الميزانية",
         "category": "service-commercial"
     },
-    "Architectural Design": {
+    "التصميم المعماري": {
         "icon": "✏️",
-        "description": "Creative and functional architectural designs that bring your vision to life.",
+        "description": "تصاميم معمارية إبداعية وعملية تحول رؤيتك إلى واقع",
         "category": "service-commercial"
     },
-    "Green Building": {
+    "البناء الأخضر": {
         "icon": "🌱",
-        "description": "Sustainable construction practices and LEED-certified building options.",
+        "description": "ممارسات البناء المستدامة وخيارات البناء المعتمدة من LEED",
         "category": "service-residential"
     }
 }
+}
 
 projects = {
-    "Al Madinah Towers": {
+    "أبراج المدينة": {
         "icon": "🏢",
-        "location": "Madinah, Saudi Arabia",
-        "description": "Luxury residential towers with 200+ premium apartments and state-of-the-art amenities.",
+        "location": "المدينة المنورة، المملكة العربية السعودية",
+        "description": "أبراج سكنية فاخرة تضم أكثر من 200 شقة متميزة ومرافق حديثة",
         "year": "2023",
-        "category": "Residential"
+        "category": "سكني"
     },
-    "Jeddah Business Center": {
+    "مركز جدة للأعمال": {
         "icon": "🏙️",
-        "location": "Jeddah, Saudi Arabia",
-        "description": "Modern office complex with smart building technology and sustainable design features.",
+        "location": "جدة، المملكة العربية السعودية",
+        "description": "مجمع مكاتب حديث مع تقنيات المباني الذكية وميزات التصميم المستدام",
         "year": "2022",
-        "category": "Commercial"
+        "category": "تجاري"
     },
-    "Red Sea Resort": {
+    "منتجع البحر الأحمر": {
         "icon": "🏖️",
-        "location": "Red Sea Coast, Saudi Arabia",
-        "description": "Luxury beachfront resort with private villas and world-class hospitality facilities.",
+        "location": "ساحل البحر الأحمر، المملكة العربية السعودية",
+        "description": "منتجع فاخر على الشاطئ مع فلل خاصة ومرافق ضيافة عالمية المستوى",
         "year": "2021",
-        "category": "Hospitality"
+        "category": "ضيافة"
     },
-    "Riyadh Industrial Park": {
+    "مجمع الرياض الصناعي": {
         "icon": "🏭",
-        "location": "Riyadh, Saudi Arabia",
-        "description": "Large-scale industrial development with warehousing and manufacturing facilities.",
+        "location": "الرياض، المملكة العربية السعودية",
+        "description": "تطوير صناعي واسع النطاق مع مرافق للتخزين والتصنيع",
         "year": "2023",
-        "category": "Industrial"
+        "category": "صناعي"
     },
-    "King Abdullah Medical City": {
+    "مدينة الملك عبدالله الطبية": {
         "icon": "🏥",
-        "location": "Makkah, Saudi Arabia",
-        "description": "State-of-the-art medical facility with specialized treatment centers and research labs.",
+        "location": "مكة المكرمة، المملكة العربية السعودية",
+        "description": "مرفق طبي متطور مع مراكز علاج متخصصة ومختبرات بحثية",
         "year": "2020",
-        "category": "Healthcare"
+        "category": "رعاية صحية"
     },
-    "Dammam Highway Extension": {
+    "توسعة طريق الدمام": {
         "icon": "🛣️",
-        "location": "Dammam, Saudi Arabia",
-        "description": "Major infrastructure project extending the highway network with bridges and interchanges.",
+        "location": "الدمام، المملكة العربية السعودية",
+        "description": "مشروع بنية تحتية رئيسي لتوسيع شبكة الطرق السريعة مع جسور وتقاطعات",
         "year": "2022",
-        "category": "Infrastructure"
+        "category": "بنية تحتية"
     },
-    "Al Khobar Shopping Mall": {
+    "مجمع الخبر للتسوق": {
         "icon": "🛍️",
-        "location": "Al Khobar, Saudi Arabia",
-        "description": "Premium retail destination with international brands, entertainment, and dining options.",
+        "location": "الخبر، المملكة العربية السعودية",
+        "description": "وجهة تسوق متميزة مع علامات تجارية عالمية وخيارات ترفيه ومطاعم",
         "year": "2021",
-        "category": "Commercial"
+        "category": "تجاري"
     },
-    "Tabuk Residential Community": {
+    "مجمع تبوك السكني": {
         "icon": "🏘️",
-        "location": "Tabuk, Saudi Arabia",
-        "description": "Integrated residential community with schools, parks, and community facilities.",
+        "location": "تبوك، المملكة العربية السعودية",
+        "description": "مجمع سكني متكامل مع مدارس وحدائق ومرافق مجتمعية",
         "year": "2023",
-        "category": "Residential"
+        "category": "سكني"
     }
 }
 
 team_members = {
-    "Abdullah Al-Saud": {
-        "position": "CEO & Founder",
-        "bio": "With over 30 years in construction, Abdullah has led JSC from a small contractor to a leading construction firm in Saudi Arabia."
+    "عبدالله السعود": {
+        "position": "الرئيس التنفيذي والمؤسس",
+        "bio": "مع أكثر من 30 عامًا في مجال البناء، قاد عبدالله شركة نجمة جدة من مقاول صغير إلى شركة بناء رائدة في المملكة العربية السعودية."
     },
-    "Mohammed Al-Qahtani": {
-        "position": "Chief Operations Officer",
-        "bio": "Mohammed oversees all project operations, ensuring quality, safety, and timely delivery across all JSC projects."
+    "محمد القحطاني": {
+        "position": "مدير العمليات",
+        "bio": "يشرف محمد على جميع عمليات المشاريع، مما يضمن الجودة والسلامة والتسليم في الوقت المناسب عبر جميع مشاريع الشركة."
     },
-    "Sara Al-Ghamdi": {
-        "position": "Chief Architect",
-        "bio": "Award-winning architect with expertise in sustainable design and innovative building solutions."
+    "سارة الغامدي": {
+        "position": "المهندس المعماري الرئيسي",
+        "bio": "مهندسة معمارية حائزة على جوائز مع خبرة في التصميم المستدام وحلول البناء المبتكرة."
     },
-    "Khalid Al-Otaibi": {
-        "position": "Project Director",
-        "bio": "Specializing in large-scale commercial and infrastructure projects with over 20 years of experience."
+    "خالد العتيبي": {
+        "position": "مدير المشاريع",
+        "bio": "متخصص في المشاريع التجارية والبنية التحتية واسعة النطاق مع أكثر من 20 عامًا من الخبرة."
     },
-    "Fatima Al-Harbi": {
-        "position": "Finance Director",
-        "bio": "Managing JSC's financial operations and strategic investments to ensure sustainable growth."
+    "فاطمة الحربي": {
+        "position": "مدير الشؤون المالية",
+        "bio": "تدير العمليات المالية والاستثمارات الاستراتيجية للشركة لضمان النمو المستدام."
     }
 }
 
 testimonials = [
     {
-        "quote": "JSC delivered our corporate headquarters ahead of schedule and under budget. Their attention to detail and quality workmanship exceeded our expectations.",
-        "author": "Ahmed Al-Dosari, CEO of Saudi Tech Innovations"
+        "quote": "قامت شركة نجمة جدة بتسليم مقر شركتنا الرئيسي قبل الموعد المحدد وضمن الميزانية. لقد تجاوز اهتمامهم بالتفاصيل وجودة العمل توقعاتنا.",
+        "author": "أحمد الدوسري، الرئيس التنفيذي لشركة الابتكارات التقنية السعودية"
     },
     {
-        "quote": "Working with JSC on our residential development was a seamless experience. Their team's professionalism and commitment to excellence is unmatched in the industry.",
-        "author": "Nora Al-Shammari, Director of Al Manar Development"
+        "quote": "كان العمل مع شركة نجمة جدة في مشروع التطوير السكني الخاص بنا تجربة سلسة. احترافية فريقهم والتزامهم بالتميز لا مثيل له في هذا المجال.",
+        "author": "نورة الشمري، مديرة شركة المنار للتطوير"
     },
     {
-        "quote": "The JSC team tackled complex challenges on our industrial facility with innovative solutions. Their expertise in industrial construction is truly impressive.",
-        "author": "Saad Al-Mutairi, Operations Manager at Saudi Manufacturing Group"
+        "quote": "تعامل فريق شركة نجمة جدة مع التحديات المعقدة في منشأتنا الصناعية بحلول مبتكرة. خبرتهم في البناء الصناعي مثيرة للإعجاب حقًا.",
+        "author": "سعد المطيري، مدير العمليات في المجموعة السعودية للتصنيع"
     }
 ]
 
-# Create a DataFrame
-family_df = pd.DataFrame(family_data)
+# Create DataFrames for projects and services
+projects_df = pd.DataFrame({
+    "name": list(projects.keys()),
+    "icon": [project["icon"] for project in projects.values()],
+    "location": [project["location"] for project in projects.values()],
+    "description": [project["description"] for project in projects.values()],
+    "year": [project["year"] for project in projects.values()],
+    "category": [project["category"] for project in projects.values()]
+})
 
-with tab1:
-    st.markdown("<h2>🏢 About Jeddah Star Company</h2>", unsafe_allow_html=True)
+with tab4:
+    st.markdown("<h2>🏢 من نحن</h2>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="intro-text">
-        <span class='icon'>🏗️</span> Welcome to Jeddah Star Company (JSC), a leading construction firm in Saudi Arabia with over 20 years of experience delivering excellence in construction and infrastructure development.
+        <span class='icon'>🏗️</span> مرحبًا بكم في شركة نجمة جدة للمقاولات، شركة رائدة في مجال البناء في المملكة العربية السعودية مع أكثر من 20 عامًا من الخبرة في تقديم التميز في البناء وتطوير البنية التحتية.
     </div>
     """, unsafe_allow_html=True)
     
     # About section
     st.markdown("""
     <div class="about-section">
-        <h3>✨ Our Story ✨</h3>
-        <p>Founded in 2003, Jeddah Star Company has grown from a small local contractor to one of Saudi Arabia's most respected construction firms. With headquarters in Jeddah and offices across the Kingdom, we've successfully completed over 200 projects ranging from luxury residential developments to large-scale infrastructure works.</p>
+        <h3>✨ قصتنا ✨</h3>
+        <p>تأسست شركة نجمة جدة للمقاولات في عام 2003، ونمت من مقاول محلي صغير إلى واحدة من أكثر شركات البناء احترامًا في المملكة العربية السعودية. مع المقر الرئيسي في جدة ومكاتب في جميع أنحاء المملكة، أكملنا بنجاح أكثر من 200 مشروع تتراوح من التطورات السكنية الفاخرة إلى أعمال البنية التحتية واسعة النطاق.</p>
         
-        <p>Our commitment to quality, innovation, and client satisfaction has established JSC as a trusted partner for both public and private sector clients. We combine traditional values with cutting-edge construction techniques to deliver projects that stand the test of time.</p>
+        <p>التزامنا بالجودة والابتكار ورضا العملاء جعل شركة نجمة جدة شريكًا موثوقًا به لعملاء القطاعين العام والخاص. نحن نجمع بين القيم التقليدية وتقنيات البناء المتطورة لتقديم مشاريع تصمد أمام اختبار الزمن.</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -452,27 +475,27 @@ with tab1:
     st.markdown('<div class="about-section" style="background-color: #f0f7ff;">', unsafe_allow_html=True)
     
     # Vision section
-    st.write("### 🔭 Our Vision")
-    st.write("To be the leading construction company in Saudi Arabia, recognized for excellence, innovation, and sustainable development practices that contribute to the Kingdom's Vision 2030.")
+    st.write("### 🔭 رؤيتنا")
+    st.write("أن نكون شركة البناء الرائدة في المملكة العربية السعودية، المعروفة بالتميز والابتكار وممارسات التنمية المستدامة التي تساهم في رؤية المملكة 2030.")
     
     # Mission section
-    st.write("### 🎯 Our Mission")
-    st.write("To deliver high-quality construction projects that exceed client expectations through innovative solutions, skilled craftsmanship, and unwavering commitment to safety, sustainability, and community development.")
+    st.write("### 🎯 مهمتنا")
+    st.write("تقديم مشاريع بناء عالية الجودة تتجاوز توقعات العملاء من خلال الحلول المبتكرة والحرفية الماهرة والالتزام الثابت بالسلامة والاستدامة وتنمية المجتمع.")
     
     # Values section
-    st.write("### 💎 Our Values")
+    st.write("### 💎 قيمنا")
     st.write("""
-    - **Excellence**: We strive for excellence in every aspect of our work
-    - **Integrity**: We conduct business with honesty and transparency
-    - **Innovation**: We embrace new technologies and construction methods
-    - **Safety**: We prioritize the safety of our team and communities
-    - **Sustainability**: We build with future generations in mind
+    - **التميز**: نسعى للتميز في كل جانب من جوانب عملنا
+    - **النزاهة**: نمارس الأعمال التجارية بصدق وشفافية
+    - **الابتكار**: نتبنى التقنيات الجديدة وأساليب البناء الحديثة
+    - **السلامة**: نعطي الأولوية لسلامة فريقنا والمجتمعات
+    - **الاستدامة**: نبني مع وضع الأجيال القادمة في الاعتبار
     """)
     
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Team section
-    st.subheader("👥 Our Leadership Team")
+    st.subheader("👥 فريق القيادة لدينا")
     
     cols = st.columns(3)
     for i, (name, info) in enumerate(team_members.items()):
@@ -486,24 +509,24 @@ with tab1:
             """, unsafe_allow_html=True)
     
     # Company statistics
-    st.subheader("📊 JSC by the Numbers")
+    st.subheader("📊 شركة نجمة جدة بالأرقام")
     
     col1, col2, col3, col4 = st.columns(4)
     with col1:
-        st.metric("Years of Experience", "20+")
+        st.metric("سنوات الخبرة", "+20")
     with col2:
-        st.metric("Completed Projects", "200+")
+        st.metric("المشاريع المنجزة", "+200")
     with col3:
-        st.metric("Professional Team", "500+")
+        st.metric("الفريق المهني", "+500")
     with col4:
-        st.metric("Client Satisfaction", "98%")
+        st.metric("رضا العملاء", "98%")
 
-with tab2:
-    st.markdown("<h2>🛠️ Our Services</h2>", unsafe_allow_html=True)
+with tab3:
+    st.markdown("<h2>🛠️ خدماتنا</h2>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="intro-text">
-        <span class='icon'>🛠️</span> JSC offers comprehensive construction services across residential, commercial, industrial, and infrastructure sectors. Our integrated approach ensures quality at every stage of your project.
+        <span class='icon'>🛠️</span> تقدم شركة نجمة جدة خدمات بناء شاملة عبر القطاعات السكنية والتجارية والصناعية والبنية التحتية. يضمن نهجنا المتكامل الجودة في كل مرحلة من مراحل مشروعك.
     </div>
     """, unsafe_allow_html=True)
     
@@ -523,39 +546,39 @@ with tab2:
     st.markdown("</div>", unsafe_allow_html=True)
     
     # Service process
-    st.subheader("🔄 Our Service Process")
+    st.subheader("🔄 عملية الخدمة لدينا")
     
     process_steps = {
-        "Consultation": "We begin with a thorough consultation to understand your vision, requirements, and budget constraints.",
-        "Planning & Design": "Our expert team develops detailed plans and designs tailored to your specific needs and objectives.",
-        "Material Selection": "We source high-quality materials that balance aesthetics, durability, and sustainability.",
-        "Construction": "Our skilled workforce executes the project with precision, following strict quality control protocols.",
-        "Quality Assurance": "Rigorous inspections ensure every aspect of construction meets our exacting standards.",
-        "Handover": "We deliver your completed project on time, with comprehensive documentation and support."
+        "الاستشارة": "نبدأ باستشارة شاملة لفهم رؤيتك ومتطلباتك وقيود الميزانية.",
+        "التخطيط والتصميم": "يقوم فريق الخبراء لدينا بتطوير خطط وتصاميم مفصلة مصممة خصيصًا لتلبية احتياجاتك وأهدافك المحددة.",
+        "اختيار المواد": "نحن نوفر مواد عالية الجودة توازن بين الجماليات والمتانة والاستدامة.",
+        "البناء": "ينفذ القوى العاملة الماهرة لدينا المشروع بدقة، متبعة بروتوكولات صارمة لمراقبة الجودة.",
+        "ضمان الجودة": "تضمن عمليات التفتيش الدقيقة أن كل جانب من جوانب البناء يلبي معاييرنا الدقيقة.",
+        "التسليم": "نقوم بتسليم مشروعك المكتمل في الوقت المحدد، مع وثائق شاملة ودعم."
     }
     
     for step, description in process_steps.items():
         st.markdown(f"""
-        <div style="padding: 15px; margin-bottom: 10px; background-color: white; border-radius: 10px; border-left: 4px solid #1a3c6e;">
+        <div style="padding: 15px; margin-bottom: 10px; background-color: white; border-radius: 10px; border-right: 4px solid #1a3c6e;">
             <h4>{step}</h4>
             <p>{description}</p>
         </div>
         """, unsafe_allow_html=True)
     
     # Certifications
-    st.subheader("🏅 Our Certifications")
+    st.subheader("🏅 شهاداتنا")
     
     certifications = [
-        "ISO 9001:2015 - Quality Management",
-        "ISO 14001:2015 - Environmental Management",
-        "ISO 45001:2018 - Occupational Health and Safety",
-        "Saudi Contractors Classification Certificate - Grade 1",
-        "LEED Accredited Professionals on Staff"
+        "ISO 9001:2015 - إدارة الجودة",
+        "ISO 14001:2015 - الإدارة البيئية",
+        "ISO 45001:2018 - الصحة والسلامة المهنية",
+        "شهادة تصنيف المقاولين السعوديين - الدرجة الأولى",
+        "محترفون معتمدون من LEED ضمن الفريق"
     ]
     
     st.markdown("""
     <div style="background-color: #f9f9f9; padding: 20px; border-radius: 10px;">
-        <ul style="list-style-type: none; padding-left: 0;">
+        <ul style="list-style-type: none; padding-right: 0;">
     """, unsafe_allow_html=True)
     
     for cert in certifications:
@@ -563,18 +586,18 @@ with tab2:
     
     st.markdown("</ul></div>", unsafe_allow_html=True)
 
-with tab3:
-    st.markdown("<h2>🏗️ Our Featured Projects</h2>", unsafe_allow_html=True)
+with tab2:
+    st.markdown("<h2>🏗️ مشاريعنا</h2>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="intro-text">
-        <span class='icon'>🏗️</span> Explore our portfolio of successful projects across Saudi Arabia. Each project showcases our commitment to quality, innovation, and client satisfaction.
+        <span class='icon'>🏗️</span> استكشف محفظة مشاريعنا الناجحة في جميع أنحاء المملكة العربية السعودية. يعرض كل مشروع التزامنا بالجودة والابتكار ورضا العملاء.
     </div>
     """, unsafe_allow_html=True)
     
     # Project filter
-    project_categories = ["All"] + list(set(project["category"] for project in projects.values()))
-    selected_category = st.selectbox("Filter by Category", project_categories)
+    project_categories = ["الكل"] + list(set(project["category"] for project in projects.values()))
+    selected_category = st.selectbox("تصفية حسب الفئة", project_categories)
     
     # Display projects in cards
     st.markdown("<div class='project-grid'>", unsafe_allow_html=True)
@@ -583,14 +606,14 @@ with tab3:
     project_index = 0
     
     for project_name, project_info in projects.items():
-        if selected_category == "All" or project_info["category"] == selected_category:
+        if selected_category == "الكل" or project_info["category"] == selected_category:
             with cols[project_index % 2]:
                 st.markdown(f"""
                 <div class="project-card">
                     <h3>{project_info['icon']} {project_name}</h3>
-                    <p><strong>Location:</strong> {project_info['location']}</p>
-                    <p><strong>Category:</strong> {project_info['category']}</p>
-                    <p><strong>Completed:</strong> {project_info['year']}</p>
+                    <p><strong>الموقع:</strong> {project_info['location']}</p>
+                    <p><strong>الفئة:</strong> {project_info['category']}</p>
+                    <p><strong>الإنجاز:</strong> {project_info['year']}</p>
                     <p>{project_info['description']}</p>
                 </div>
                 """, unsafe_allow_html=True)
@@ -599,7 +622,7 @@ with tab3:
     st.markdown("</div>", unsafe_allow_html=True)
     
     # Project showcase
-    st.subheader("🌟 Project Highlights")
+    st.subheader("🌟 أبرز المشاريع")
     
     # Create a network graph to showcase project relationships
     G = nx.Graph()
@@ -623,7 +646,7 @@ with tab3:
         "size": 30,
         "font": {
           "size": 16,
-          "face": "Montserrat"
+          "face": "Tajawal"
         },
         "borderWidth": 3,
         "shadow": true,
@@ -667,10 +690,10 @@ with tab3:
     
     components.html(html, height=600)
     
-    st.info("👆 Explore our project network above. Projects are connected to their categories. Click on any node to see details!")
+    st.info("👆 استكشف شبكة مشاريعنا أعلاه. المشاريع متصلة بفئاتها. انقر على أي عقدة لرؤية التفاصيل!")
     
     # Client testimonials
-    st.subheader("💬 Client Testimonials")
+    st.subheader("💬 شهادات العملاء")
     
     for testimonial in testimonials:
         st.markdown(f"""
@@ -684,12 +707,12 @@ with tab3:
         </div>
         """, unsafe_allow_html=True)
 
-with tab4:
-    st.markdown("<h2>📞 Contact Us</h2>", unsafe_allow_html=True)
+with tab1:
+    st.markdown("<h2>📞 تواصل معنا</h2>", unsafe_allow_html=True)
     
     st.markdown("""
     <div class="intro-text">
-        <span class='icon'>📞</span> Ready to start your project? Contact JSC today for a consultation. Our team is ready to bring your vision to life with expertise and excellence.
+        <span class='icon'>📞</span> هل أنت جاهز لبدء مشروعك؟ تواصل مع شركة نجمة جدة اليوم للحصول على استشارة. فريقنا جاهز لتحويل رؤيتك إلى واقع بخبرة وتميز.
     </div>
     """, unsafe_allow_html=True)
     
@@ -699,25 +722,25 @@ with tab4:
     with col1:
         st.markdown("""
         <div style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3>Get in Touch</h3>
+            <h3>تواصل معنا</h3>
             <form>
                 <div style="margin-bottom: 15px;">
-                    <label for="name">Name</label>
-                    <input type="text" id="name" placeholder="Your Name" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <label for="name">الاسم</label>
+                    <input type="text" id="name" placeholder="اسمك" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; text-align: right;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" placeholder="Your Email" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" placeholder="بريدك الإلكتروني" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; text-align: right;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label for="phone">Phone</label>
-                    <input type="tel" id="phone" placeholder="Your Phone" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                    <label for="phone">رقم الهاتف</label>
+                    <input type="tel" id="phone" placeholder="رقم هاتفك" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; text-align: right;">
                 </div>
                 <div style="margin-bottom: 15px;">
-                    <label for="message">Message</label>
-                    <textarea id="message" placeholder="Tell us about your project" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; height: 150px;"></textarea>
+                    <label for="message">الرسالة</label>
+                    <textarea id="message" placeholder="أخبرنا عن مشروعك" style="width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ddd; height: 150px; text-align: right;"></textarea>
                 </div>
-                <button type="submit" style="background-color: #f7a100; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">Send Message</button>
+                <button type="submit" style="background-color: #f7a100; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-weight: bold;">إرسال الرسالة</button>
             </form>
         </div>
         """, unsafe_allow_html=True)
@@ -725,18 +748,18 @@ with tab4:
     with col2:
         st.markdown("""
         <div style="background-color: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-            <h3>Contact Information</h3>
-            <p><strong>Address:</strong> King Fahd Road, Al Hamra District, Jeddah, Saudi Arabia</p>
-            <p><strong>Phone:</strong> +966 12 345 6789</p>
-            <p><strong>Email:</strong> info@jeddahstarcompany.com</p>
-            <p><strong>Working Hours:</strong> Sunday - Thursday: 8:00 AM - 5:00 PM</p>
+            <h3>معلومات الاتصال</h3>
+            <p><strong>العنوان:</strong> طريق الملك فهد، حي الحمراء، جدة، المملكة العربية السعودية</p>
+            <p><strong>الهاتف:</strong> 6789 345 12 966+</p>
+            <p><strong>البريد الإلكتروني:</strong> info@jeddahstarcompany.com</p>
+            <p><strong>ساعات العمل:</strong> الأحد - الخميس: 8:00 صباحًا - 5:00 مساءً</p>
             
-            <h4 style="margin-top: 20px;">Our Offices</h4>
-            <ul style="list-style-type: none; padding-left: 0;">
-                <li style="margin-bottom: 10px;">🏢 Jeddah (Headquarters)</li>
-                <li style="margin-bottom: 10px;">🏢 Riyadh</li>
-                <li style="margin-bottom: 10px;">🏢 Dammam</li>
-                <li style="margin-bottom: 10px;">🏢 Makkah</li>
+            <h4 style="margin-top: 20px;">مكاتبنا</h4>
+            <ul style="list-style-type: none; padding-right: 0;">
+                <li style="margin-bottom: 10px;">🏢 جدة (المقر الرئيسي)</li>
+                <li style="margin-bottom: 10px;">🏢 الرياض</li>
+                <li style="margin-bottom: 10px;">🏢 الدمام</li>
+                <li style="margin-bottom: 10px;">🏢 مكة المكرمة</li>
             </ul>
         </div>
         """, unsafe_allow_html=True)
@@ -744,10 +767,10 @@ with tab4:
     # Map placeholder
     st.markdown("""
     <div style="background-color: #e6eef8; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center;">
-        <h3>Our Location</h3>
-        <p>Interactive map would be displayed here in a production environment.</p>
+        <h3>موقعنا</h3>
+        <p>سيتم عرض الخريطة التفاعلية هنا في بيئة الإنتاج.</p>
         <div style="background-color: #ccc; height: 300px; display: flex; align-items: center; justify-content: center; border-radius: 5px;">
-            <span style="font-size: 24px;">🗺️ Map Placeholder</span>
+            <span style="font-size: 24px;">🗺️ مكان الخريطة</span>
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -755,6 +778,6 @@ with tab4:
 # Footer with company info
 st.markdown("""
 <footer>
-    <p>© 2025 Jeddah Star Company | Building Excellence Since 2003 | <a href="#" style="color: #f7a100;">Privacy Policy</a> | <a href="#" style="color: #f7a100;">Terms of Service</a></p>
+    <p>© 2025 شركة نجمة جدة للمقاولات | التميز في البناء منذ 2003 | <a href="#" style="color: #f7a100;">سياسة الخصوصية</a> | <a href="#" style="color: #f7a100;">شروط الخدمة</a></p>
 </footer>
 """, unsafe_allow_html=True)
